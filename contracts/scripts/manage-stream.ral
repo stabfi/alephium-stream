@@ -1,0 +1,7 @@
+TxScript UnlockStream(factory: StreamFactory, id: U256) {
+    factory.unlockStream(id)
+}
+
+TxScript CancelStream(factory: StreamFactory, id: U256) {
+    factory.cancelStream(id)
+}

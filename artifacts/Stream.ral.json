@@ -1,0 +1,103 @@
+{
+  "version": "v3.0.2",
+  "name": "Stream",
+  "bytecode": "0c051e402f40ab40c340d701000000090bd3794f8d02ce01ce02ce03ce05ce06ce07ce08ce09ce0a02010000000105d39c92496ace04a0002b0201000007014042d38e1385f95617001600ce07314c020c02ce054c191600ce08334c02ce084a011600ce072b1701ce08ce072b1702ce04a0002b1703160316012c16022d024a1e1600ce072b17041604ce092d17051605134064ce0a2d334c04134064ce0a2d17051605ce04ce0a2c1340642d2c17061606a0002b0201000101000ad3ea1c586bb3ce00410c7ba00016002aa100010200000008d35ca875c8b3ce00410c7bce01b0",
+  "codeHash": "491710a52366aa6cdcac80d412c4e1c4052cae7bef9b2bf6118f4ad72cd8720a",
+  "fieldsSig": {
+    "names": [
+      "factoryContractId",
+      "creator",
+      "recipient",
+      "tokenId",
+      "amount",
+      "config",
+      "spentAmount"
+    ],
+    "types": [
+      "ByteVec",
+      "Address",
+      "Address",
+      "ByteVec",
+      "U256",
+      "StreamConfig",
+      "U256"
+    ],
+    "isMutable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  "eventsSig": [],
+  "functions": [
+    {
+      "name": "getStreamDetails",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "Address",
+        "Address",
+        "ByteVec",
+        "StreamConfig"
+      ]
+    },
+    {
+      "name": "getLockedAmount",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
+    },
+    {
+      "name": "getAvailableAmount",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
+    },
+    {
+      "name": "addSpentAmount",
+      "paramNames": [
+        "value"
+      ],
+      "paramTypes": [
+        "U256"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "destroyStream",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "StreamError",
+      "fields": [
+        {
+          "name": "NotAuthorized",
+          "value": {
+            "type": "U256",
+            "value": "0"
+          }
+        }
+      ]
+    }
+  ]
+}

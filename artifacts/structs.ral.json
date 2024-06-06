@@ -1,0 +1,29 @@
+[
+  {
+    "name": "StreamConfig",
+    "fieldNames": [
+      "isLinear",
+      "isCancelable",
+      "startTimestamp",
+      "endTimestamp",
+      "unlockInterval",
+      "unlockPercentage"
+    ],
+    "fieldTypes": [
+      "Bool",
+      "Bool",
+      "U256",
+      "U256",
+      "U256",
+      "U256"
+    ],
+    "isMutable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  }
+]

@@ -1,0 +1,43 @@
+{
+  "version": "v3.0.2",
+  "name": "CreateTokenLinearStream",
+  "bytecodeTemplate": "01010300000015b47a13c40de0b6b3a7640000a2{1}{2}a3b4{1}{2}{3}03{4}{5}{6}0c0c130a0c{0}0100",
+  "fieldsSig": {
+    "names": [
+      "factory",
+      "tokenId",
+      "amount",
+      "recipient",
+      "isCancelable",
+      "startTimestamp",
+      "endTimestamp"
+    ],
+    "types": [
+      "StreamFactory",
+      "ByteVec",
+      "U256",
+      "Address",
+      "Bool",
+      "U256",
+      "U256"
+    ],
+    "isMutable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "functions": [
+    {
+      "name": "main",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    }
+  ]
+}

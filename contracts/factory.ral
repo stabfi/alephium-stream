@@ -1,0 +1,132 @@
+Contract StreamFactory(
+    streamTemplateId: ByteVec, // Contract ID of the Stream contract
+    mut streamCounter: U256 // Counter to keep track of stream instances
+) {
+    // Event triggered when a new stream is created
+    event StreamCreated(streamId: U256, creator: Address, recipient: Address, contractId: ByteVec)
+    // Event triggered when a stream is unlocked
+    event StreamUnlocked(streamId: U256, recipient: Address, tokenId: ByteVec, amount: U256)
+    // Event triggered when a stream is canceled
+    event StreamCanceled(streamId: U256, creator: Address, tokenId: ByteVec, amount: U256)
+
+    // Enumeration of possible errors in StreamFactory
+    enum StreamFactoryError {
+        NotAuthorized = 0 // Caller is not authorized
+        NotAvailable = 1 // Stream is not available for unlocking
+        NotCancelable = 2 // Stream is not cancelable
+        EmptyStream = 3 // Stream has no locked amount
+        InvalidAmount = 4 // Provided amount is invalid
+        InvalidStartPeriod = 5 // Start timestamp is invalid
+        InvalidStreamPeriod = 6 // Stream period is invalid
+        InvalidUnlockPercentage = 7 // Unlock percentage is invalid
+    }
+
+    @using(preapprovedAssets = true, payToContractOnly = true, checkExternalCaller = false, updateFields = true)
+    pub fn createStream(
+        caller: Address, // Address of the stream creator
+        tokenId: ByteVec, // Token ID to be streamed
+        amount: U256, // Amount of tokens to be streamed
+        recipient: Address, // Address of the stream recipient
+        config: StreamConfig // Stream configuration
+    ) -> () {
+        // Transfer tokens from caller to contract
+        transferTokenToSelf!(caller, tokenId, amount)
+
+        // Ensure the amount is greater than zero
+        assert!(amount > 0, StreamFactoryError.InvalidAmount)
+        // Ensure the start timestamp is in the future
+        assert!(config.startTimestamp > blockTimeStamp!(), StreamFactoryError.InvalidStartPeriod)
+
+        // Check if stream is linear and validate the period
+        if (config.isLinear) {
+            assert!(config.endTimestamp > config.startTimestamp, StreamFactoryError.InvalidStreamPeriod)
+        } else {
+            // Validate unlock percentage for non-linear streams
+            assert!(100 % config.unlockPercentage == 0, StreamFactoryError.InvalidUnlockPercentage)
+        }
+
+        // Encode immutable and mutable fields for the stream
+        let (encodedImmutableFields, encodedMutableFields) = Stream.encodeFields!(
+            selfContractId!(),
+            caller,
+            recipient,
+            tokenId,
+            amount,
+            config,
+            0
+        )
+
+        // Generate path for the new stream
+        let path = toByteVec!(streamCounter)
+
+        // Create a new sub-contract for the stream
+        let contractId = copyCreateSubContract!{caller -> ALPH: 1 alph}(
+            path,
+            streamTemplateId,
+            encodedImmutableFields,
+            encodedMutableFields
+        )
+
+        // Emit event for stream creation
+        emit StreamCreated(streamCounter, caller, recipient, contractId)
+
+        // Increment the stream counter
+        streamCounter = streamCounter + 1
+    }
+
+    @using(assetsInContract = true)
+    pub fn unlockStream(streamId: U256) -> () {
+        // Get the sub-contract ID of the stream
+        let path = toByteVec!(streamId)
+        let contractId = subContractId!(path)
+        
+        // Retrieve stream details and ensure the caller is the recipient
+        let (_, recipient, tokenId, _) = Stream(contractId).getStreamDetails()
+        checkCaller!(callerAddress!() == recipient, StreamFactoryError.NotAuthorized)
+
+        // Get the available amount to unlock and ensure there is an amount to unlock
+        let unlockAmount = Stream(contractId).getAvailableAmount()
+        assert!(unlockAmount > 0, StreamFactoryError.NotAvailable)
+
+        // Transfer the unlocked amount to the recipient and update the spent amount in the stream
+        transferTokenFromSelf!(recipient, tokenId, unlockAmount)
+        Stream(contractId).addSpentAmount(unlockAmount)
+
+        // Get the remaining locked amount and destroy the stream sub-contract if no amount is left
+        let remainingAmount = Stream(contractId).getLockedAmount()
+        if (remainingAmount == 0) {
+            Stream(contractId).destroyStream()
+        }
+
+        // Emit event for stream unlocking
+        emit StreamUnlocked(streamId, recipient, tokenId, unlockAmount)
+    }
+
+    @using(assetsInContract = true)
+    pub fn cancelStream(streamId: U256) -> () {
+        // Get the sub-contract ID of the stream
+        let path = toByteVec!(streamId)
+        let contractId = subContractId!(path)
+
+        // Retrieve stream details and ensure the caller is the creator
+        let (creator, _, tokenId, config) = Stream(contractId).getStreamDetails()
+        checkCaller!(callerAddress!() == creator, StreamFactoryError.NotAuthorized)
+
+        // Ensure the stream is cancelable
+        assert!(config.isCancelable, StreamFactoryError.NotCancelable)
+
+        // Get the locked amount in the stream
+        let lockedAmount = Stream(contractId).getLockedAmount()
+        // Ensure there is a locked amount
+        assert!(lockedAmount > 0, StreamFactoryError.EmptyStream)
+
+        // Transfer the locked amount back to the creator
+        transferTokenFromSelf!(creator, tokenId, lockedAmount)
+
+        // Destroy the stream
+        Stream(contractId).destroyStream()
+
+        // Emit event for stream cancellation
+        emit StreamCanceled(streamId, creator, tokenId, lockedAmount)
+    }
+}

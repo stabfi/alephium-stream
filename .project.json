@@ -1,0 +1,76 @@
+{
+  "fullNodeVersion": "v3.0.2",
+  "compilerOptionsUsed": {
+    "ignoreUnusedConstantsWarnings": false,
+    "ignoreUnusedVariablesWarnings": false,
+    "ignoreUnusedFieldsWarnings": false,
+    "ignoreUnusedPrivateFunctionsWarnings": false,
+    "ignoreUpdateFieldsCheckWarnings": false,
+    "ignoreCheckExternalCallerWarnings": false
+  },
+  "infos": {
+    "CancelStream": {
+      "sourceFile": "scripts/manage-stream.ral",
+      "sourceCodeHash": "62b9db678502d8d846ed8ed443372627a98c02fbce767b84c0f31cde91988dc4",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "",
+      "warnings": []
+    },
+    "CreateALPHCustomStream": {
+      "sourceFile": "scripts/create-stream.ral",
+      "sourceCodeHash": "dc2d80208671acc2f1d4000227ba6b7d6065f31f863e5b38d8d9b93192c074d4",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "",
+      "warnings": []
+    },
+    "CreateALPHLinearStream": {
+      "sourceFile": "scripts/create-stream.ral",
+      "sourceCodeHash": "dc2d80208671acc2f1d4000227ba6b7d6065f31f863e5b38d8d9b93192c074d4",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "",
+      "warnings": []
+    },
+    "CreateTokenCustomStream": {
+      "sourceFile": "scripts/create-stream.ral",
+      "sourceCodeHash": "dc2d80208671acc2f1d4000227ba6b7d6065f31f863e5b38d8d9b93192c074d4",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "",
+      "warnings": []
+    },
+    "CreateTokenLinearStream": {
+      "sourceFile": "scripts/create-stream.ral",
+      "sourceCodeHash": "dc2d80208671acc2f1d4000227ba6b7d6065f31f863e5b38d8d9b93192c074d4",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "",
+      "warnings": []
+    },
+    "Stream": {
+      "sourceFile": "stream.ral",
+      "sourceCodeHash": "f57f856a4d48261e1a887f2f63b6853ec25fc803783459172f9a9c787f3cf697",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "491710a52366aa6cdcac80d412c4e1c4052cae7bef9b2bf6118f4ad72cd8720a",
+      "warnings": []
+    },
+    "StreamConfig": {
+      "sourceFile": "stream.ral",
+      "sourceCodeHash": "f57f856a4d48261e1a887f2f63b6853ec25fc803783459172f9a9c787f3cf697",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "",
+      "warnings": []
+    },
+    "StreamFactory": {
+      "sourceFile": "factory.ral",
+      "sourceCodeHash": "1b54097e258008e610b234ea29e8dfe964ed0e1d006f696cda08ae6a13908ad1",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "a6328bdf14d907923cc58637de4ecb68c84eeb677b29778f3b97f309751bb40d",
+      "warnings": []
+    },
+    "UnlockStream": {
+      "sourceFile": "scripts/manage-stream.ral",
+      "sourceCodeHash": "62b9db678502d8d846ed8ed443372627a98c02fbce767b84c0f31cde91988dc4",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "",
+      "warnings": []
+    }
+  }
+}

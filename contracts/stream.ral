@@ -1,0 +1,98 @@
+// Configuration for a stream
+struct StreamConfig {
+    isLinear: Bool, // Indicates if the stream is linear
+    isCancelable: Bool, // Indicates if the stream is cancelable
+
+    // Stream period
+    startTimestamp: U256, // Start timestamp of the stream
+    endTimestamp: U256, // End timestamp of the stream
+    
+    // Custom rules for unlocking
+    unlockInterval: U256, // Interval for unlocking
+    unlockPercentage: U256 // Percentage to unlock at each interval
+}
+
+Contract Stream(
+    factoryContractId: ByteVec, // ID of the factory contract
+    creator: Address, // Address of the stream creator
+    recipient: Address, // Address of the stream recipient
+    tokenId: ByteVec, // Token ID to be streamed
+    amount: U256, // Total amount to be streamed
+    config: StreamConfig, // Configuration of the stream
+    mut spentAmount: U256 // Amount already spent from the stream
+) {
+    // Enumeration of possible errors in Stream
+    enum StreamError {
+        NotAuthorized = 0 // Caller is not authorized
+    }
+
+    // Function to get stream details
+    pub fn getStreamDetails() -> (Address, Address, ByteVec, StreamConfig) {
+        return creator, recipient, tokenId, config
+    }
+
+    // Function to get the locked amount in the stream
+    pub fn getLockedAmount() -> U256 {
+        return amount - spentAmount
+    }
+
+    // Function to get the available amount for unlocking
+    pub fn getAvailableAmount() -> U256 {
+        // Get the current block timestamp and return 0 if the stream has not started yet
+        let timestamp = blockTimeStamp!()
+        if (timestamp < config.startTimestamp) {
+            return 0
+        }
+        
+        // Check if the stream is linear
+        if (config.isLinear) {
+            // Calculate the time elapsed since the stream start (limited by endTimestamp)
+            let timeElapsed = (if (timestamp > config.endTimestamp) config.endTimestamp else timestamp) - config.startTimestamp
+        
+            // Calculate the total duration of the stream
+            let totalInterval = config.endTimestamp - config.startTimestamp
+        
+            // Calculate the remaining amount to be unlocked
+            let remainingAmount = amount - spentAmount
+        
+            // Calculate the available amount based on the elapsed time
+            return (remainingAmount * timeElapsed) / totalInterval
+        } else {
+            // Calculate the time elapsed since the stream start
+            let elapsed = timestamp - config.startTimestamp
+        
+            // Calculate the number of unlock intervals that have passed
+            let mut unlocksCount = elapsed / config.unlockInterval
+
+            // Limit the number of unlocks to the maximum possible based on unlockPercentage
+            if (unlocksCount > 100 / config.unlockPercentage) {
+                unlocksCount = 100 / config.unlockPercentage
+            }
+        
+            // Calculate the amount to be unlocked based on the number of unlocks
+            let unlockAmount = unlocksCount * ((amount * config.unlockPercentage) / 100)
+        
+            // Calculate the final available amount by subtracting the already spent amount
+            return unlockAmount - spentAmount
+        }
+    }
+
+    
+    @using(updateFields = true)
+    pub fn addSpentAmount(value: U256) -> () {
+        // Ensure the caller is the factory contract
+        checkCaller!(callerContractId!() == factoryContractId, StreamError.NotAuthorized)
+
+        // Update the spent amount
+        spentAmount = spentAmount + value
+    }
+
+    @using(assetsInContract = true)
+    pub fn destroyStream() -> () {
+        // Ensure the caller is the factory contract
+        checkCaller!(callerContractId!() == factoryContractId, StreamError.NotAuthorized)
+
+        // Destroy the stream contract
+        destroySelf!(creator)
+    }
+}
