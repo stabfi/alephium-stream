@@ -87,6 +87,7 @@ class Factory extends ContractFactory<
       InvalidAmount: BigInt(4),
       InvalidStreamPeriod: BigInt(5),
       InvalidUnlockPercentage: BigInt(6),
+      InvalidUnlockAmount: BigInt(7),
     },
   };
 
@@ -112,7 +113,7 @@ class Factory extends ContractFactory<
     unlockStream: async (
       params: TestContractParamsWithoutMaps<
         StreamFactoryTypes.Fields,
-        { streamId: bigint }
+        { streamId: bigint; amount: bigint }
       >
     ): Promise<TestContractResultWithoutMaps<null>> => {
       return testMethod(this, "unlockStream", params, getContractByCodeHash);
@@ -133,7 +134,7 @@ export const StreamFactory = new Factory(
   Contract.fromJson(
     StreamFactoryContractJson,
     "",
-    "16e41b84e99f82236731b6f83e90ee3d82f31677153b8963392eb0c4f60dbb20",
+    "f664d87703ea73321308f950f92a3e4d2169f6b25dda59e9605f972d137d590b",
     AllStructs
   )
 );

@@ -18,6 +18,7 @@ Contract StreamFactory(
         InvalidAmount = 4 // Provided amount is invalid
         InvalidStreamPeriod = 5 // Stream period is invalid
         InvalidUnlockPercentage = 6 // Unlock percentage is invalid
+        InvalidUnlockAmount = 7 // Unlock amount is invalid
     }
 
     @using(preapprovedAssets = true, payToContractOnly = true, checkExternalCaller = false, updateFields = true)
@@ -72,7 +73,7 @@ Contract StreamFactory(
     }
 
     @using(assetsInContract = true)
-    pub fn unlockStream(streamId: U256) -> () {
+    pub fn unlockStream(streamId: U256, amount: U256) -> () {
         // Get the sub-contract ID of the stream
         let path = toByteVec!(streamId)
         let contractId = subContractId!(path)
@@ -82,8 +83,16 @@ Contract StreamFactory(
         checkCaller!(callerAddress!() == recipient, StreamFactoryError.NotAuthorized)
 
         // Get the available amount to unlock and ensure there is an amount to unlock
-        let unlockAmount = Stream(contractId).getAvailableAmount()
+        let mut unlockAmount = Stream(contractId).getAvailableAmount()
         assert!(unlockAmount > 0, StreamFactoryError.NotAvailable)
+
+        // Ensure the requested amount to unlock is valid
+        assert!(amount <= unlockAmount, StreamFactoryError.InvalidUnlockAmount)
+
+        // If a specific amount is requested, update the unlock amount
+        if (amount != 0) {
+            unlockAmount = amount
+        }
 
         // Transfer the unlocked amount to the recipient and update the spent amount in the stream
         transferTokenFromSelf!(recipient, tokenId, unlockAmount)

@@ -67,4 +67,5 @@ export const CreateTokenLinearStream = new ExecutableScript<{
 export const UnlockStream = new ExecutableScript<{
   factory: HexString;
   id: bigint;
+  amount: bigint;
 }>(Script.fromJson(UnlockStreamScriptJson, "", AllStructs));
