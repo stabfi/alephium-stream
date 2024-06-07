@@ -10,7 +10,7 @@ const deployStream: DeployFunction<Settings> = async (
   const deployment = await deployer.deployContract(Stream, {
     initialFields: {
       factoryContractId: ZERO_ADDRESS,
-      sender: ZERO_ADDRESS,
+      creator: ZERO_ADDRESS,
       recipient: ZERO_ADDRESS,
       tokenId: ALPH_TOKEN_ID,
       amount: 0,
@@ -20,9 +20,9 @@ const deployStream: DeployFunction<Settings> = async (
         startTimestamp: 0,
         endTimestamp: 0,
         unlockInterval: 0,
-        unlockPercent: 0,
+        unlockPercentage: 0,
       },
-      spent: 0,
+      spentAmount: 0,
     },
   })
 
