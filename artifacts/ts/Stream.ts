@@ -41,7 +41,7 @@ export namespace StreamTypes {
     tokenId: HexString;
     amount: bigint;
     config: StreamConfig;
-    spentAmount: bigint;
+    withdrawnAmount: bigint;
   };
 
   export type State = ContractState<Fields>;
@@ -130,13 +130,18 @@ class Factory extends ContractFactory<StreamInstance, StreamTypes.Fields> {
         getContractByCodeHash
       );
     },
-    addSpentAmount: async (
+    addWithdrawnAmount: async (
       params: TestContractParamsWithoutMaps<
         StreamTypes.Fields,
         { value: bigint }
       >
     ): Promise<TestContractResultWithoutMaps<null>> => {
-      return testMethod(this, "addSpentAmount", params, getContractByCodeHash);
+      return testMethod(
+        this,
+        "addWithdrawnAmount",
+        params,
+        getContractByCodeHash
+      );
     },
     destroyStream: async (
       params: Omit<
@@ -154,7 +159,7 @@ export const Stream = new Factory(
   Contract.fromJson(
     StreamContractJson,
     "",
-    "491710a52366aa6cdcac80d412c4e1c4052cae7bef9b2bf6118f4ad72cd8720a",
+    "a357696cfee44f14f3b9702b53b488ae3fb79e06a142930e0f6337e6440ef90e",
     AllStructs
   )
 );

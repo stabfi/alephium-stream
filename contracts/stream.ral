@@ -19,7 +19,7 @@ Contract Stream(
     tokenId: ByteVec, // Token ID to be streamed
     amount: U256, // Total amount to be streamed
     config: StreamConfig, // Configuration of the stream
-    mut spentAmount: U256 // Amount already spent from the stream
+    mut withdrawnAmount: U256 // Amount already withdrawn from the stream
 ) {
     // Enumeration of possible errors in Stream
     enum StreamError {
@@ -33,7 +33,7 @@ Contract Stream(
 
     // Function to get the locked amount in the stream
     pub fn getLockedAmount() -> U256 {
-        return amount - spentAmount
+        return amount - withdrawnAmount
     }
 
     // Function to get the available amount for unlocking
@@ -53,7 +53,7 @@ Contract Stream(
             let totalInterval = config.endTimestamp - config.startTimestamp
         
             // Calculate the remaining amount to be unlocked
-            let remainingAmount = amount - spentAmount
+            let remainingAmount = amount - withdrawnAmount
         
             // Calculate the available amount based on the elapsed time
             return (remainingAmount * timeElapsed) / totalInterval
@@ -72,19 +72,19 @@ Contract Stream(
             // Calculate the amount to be unlocked based on the number of unlocks
             let unlockAmount = unlocksCount * ((amount * config.unlockPercentage) / 100)
         
-            // Calculate the final available amount by subtracting the already spent amount
-            return unlockAmount - spentAmount
+            // Calculate the available amount
+            return unlockAmount - withdrawnAmount
         }
     }
 
     
     @using(updateFields = true)
-    pub fn addSpentAmount(value: U256) -> () {
+    pub fn addWithdrawnAmount(value: U256) -> () {
         // Ensure the caller is the factory contract
         checkCaller!(callerContractId!() == factoryContractId, StreamError.NotAuthorized)
 
-        // Update the spent amount
-        spentAmount = spentAmount + value
+        // Update the withdrawn amount
+        withdrawnAmount = withdrawnAmount + value
     }
 
     @using(assetsInContract = true)

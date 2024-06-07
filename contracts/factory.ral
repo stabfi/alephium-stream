@@ -94,9 +94,9 @@ Contract StreamFactory(
             unlockAmount = amount
         }
 
-        // Transfer the unlocked amount to the recipient and update the spent amount in the stream
+        // Transfer the unlocked amount to the recipient and update the withdrwan amount in the stream
         transferTokenFromSelf!(recipient, tokenId, unlockAmount)
-        Stream(contractId).addSpentAmount(unlockAmount)
+        Stream(contractId).addWithdrawnAmount(unlockAmount)
 
         // Get the remaining locked amount and destroy the stream sub-contract if no amount is left
         let remainingAmount = Stream(contractId).getLockedAmount()

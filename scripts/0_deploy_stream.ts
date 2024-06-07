@@ -22,7 +22,7 @@ const deployStream: DeployFunction<Settings> = async (
         unlockInterval: 0,
         unlockPercentage: 0,
       },
-      spentAmount: 0,
+      withdrawnAmount: 0,
     },
   })
 

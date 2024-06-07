@@ -46,21 +46,21 @@
     },
     "Stream": {
       "sourceFile": "stream.ral",
-      "sourceCodeHash": "d6f4aad4738ebfdb1117c5fa1b246c212c584c08f980109d693dae62cc121a03",
+      "sourceCodeHash": "00792a1e292e33a84ae60a3a4563a00e5d45290df59646c74593b0e756530179",
       "bytecodeDebugPatch": "",
-      "codeHashDebug": "491710a52366aa6cdcac80d412c4e1c4052cae7bef9b2bf6118f4ad72cd8720a",
+      "codeHashDebug": "a357696cfee44f14f3b9702b53b488ae3fb79e06a142930e0f6337e6440ef90e",
       "warnings": []
     },
     "StreamConfig": {
       "sourceFile": "stream.ral",
-      "sourceCodeHash": "d6f4aad4738ebfdb1117c5fa1b246c212c584c08f980109d693dae62cc121a03",
+      "sourceCodeHash": "00792a1e292e33a84ae60a3a4563a00e5d45290df59646c74593b0e756530179",
       "bytecodeDebugPatch": "",
       "codeHashDebug": "",
       "warnings": []
     },
     "StreamFactory": {
       "sourceFile": "factory.ral",
-      "sourceCodeHash": "be35e1563d3413262d1cbac3ade625834341d535a93309e7e69caa97a1839ee6",
+      "sourceCodeHash": "db3fe803346217bbc731e61c866d22afd0ff7af3f4a88d54a7977a716c93b0f0",
       "bytecodeDebugPatch": "",
       "codeHashDebug": "f664d87703ea73321308f950f92a3e4d2169f6b25dda59e9605f972d137d590b",
       "warnings": []
