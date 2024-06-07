@@ -85,9 +85,8 @@ class Factory extends ContractFactory<
       NotCancelable: BigInt(2),
       EmptyStream: BigInt(3),
       InvalidAmount: BigInt(4),
-      InvalidStartPeriod: BigInt(5),
-      InvalidStreamPeriod: BigInt(6),
-      InvalidUnlockPercentage: BigInt(7),
+      InvalidStreamPeriod: BigInt(5),
+      InvalidUnlockPercentage: BigInt(6),
     },
   };
 
@@ -134,7 +133,7 @@ export const StreamFactory = new Factory(
   Contract.fromJson(
     StreamFactoryContractJson,
     "",
-    "a6328bdf14d907923cc58637de4ecb68c84eeb677b29778f3b97f309751bb40d",
+    "16e41b84e99f82236731b6f83e90ee3d82f31677153b8963392eb0c4f60dbb20",
     AllStructs
   )
 );

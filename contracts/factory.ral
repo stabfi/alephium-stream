@@ -16,9 +16,8 @@ Contract StreamFactory(
         NotCancelable = 2 // Stream is not cancelable
         EmptyStream = 3 // Stream has no locked amount
         InvalidAmount = 4 // Provided amount is invalid
-        InvalidStartPeriod = 5 // Start timestamp is invalid
-        InvalidStreamPeriod = 6 // Stream period is invalid
-        InvalidUnlockPercentage = 7 // Unlock percentage is invalid
+        InvalidStreamPeriod = 5 // Stream period is invalid
+        InvalidUnlockPercentage = 6 // Unlock percentage is invalid
     }
 
     @using(preapprovedAssets = true, payToContractOnly = true, checkExternalCaller = false, updateFields = true)
@@ -34,8 +33,6 @@ Contract StreamFactory(
 
         // Ensure the amount is greater than zero
         assert!(amount > 0, StreamFactoryError.InvalidAmount)
-        // Ensure the start timestamp is in the future
-        assert!(config.startTimestamp > blockTimeStamp!(), StreamFactoryError.InvalidStartPeriod)
 
         // Check if stream is linear and validate the period
         if (config.isLinear) {

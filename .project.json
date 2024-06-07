@@ -46,23 +46,23 @@
     },
     "Stream": {
       "sourceFile": "stream.ral",
-      "sourceCodeHash": "f57f856a4d48261e1a887f2f63b6853ec25fc803783459172f9a9c787f3cf697",
+      "sourceCodeHash": "d6f4aad4738ebfdb1117c5fa1b246c212c584c08f980109d693dae62cc121a03",
       "bytecodeDebugPatch": "",
       "codeHashDebug": "491710a52366aa6cdcac80d412c4e1c4052cae7bef9b2bf6118f4ad72cd8720a",
       "warnings": []
     },
     "StreamConfig": {
       "sourceFile": "stream.ral",
-      "sourceCodeHash": "f57f856a4d48261e1a887f2f63b6853ec25fc803783459172f9a9c787f3cf697",
+      "sourceCodeHash": "d6f4aad4738ebfdb1117c5fa1b246c212c584c08f980109d693dae62cc121a03",
       "bytecodeDebugPatch": "",
       "codeHashDebug": "",
       "warnings": []
     },
     "StreamFactory": {
       "sourceFile": "factory.ral",
-      "sourceCodeHash": "1b54097e258008e610b234ea29e8dfe964ed0e1d006f696cda08ae6a13908ad1",
+      "sourceCodeHash": "c52393d9cbc02b1ee32dcb499d94744fba5c46cdfaf6a3e2d444a08e21398610",
       "bytecodeDebugPatch": "",
-      "codeHashDebug": "a6328bdf14d907923cc58637de4ecb68c84eeb677b29778f3b97f309751bb40d",
+      "codeHashDebug": "16e41b84e99f82236731b6f83e90ee3d82f31677153b8963392eb0c4f60dbb20",
       "warnings": []
     },
     "UnlockStream": {
