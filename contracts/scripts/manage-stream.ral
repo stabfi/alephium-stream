@@ -1,5 +1,5 @@
-TxScript UnlockStream(factory: StreamFactory, id: U256, amount: U256) {
-    factory.unlockStream(id, amount)
+TxScript WithdrawStream(factory: StreamFactory, id: U256, amount: U256) {
+    factory.withdrawStream(id, amount)
 }
 
 TxScript CancelStream(factory: StreamFactory, id: U256) {

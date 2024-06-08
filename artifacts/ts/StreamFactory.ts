@@ -47,7 +47,7 @@ export namespace StreamFactoryTypes {
     recipient: Address;
     contractId: HexString;
   }>;
-  export type StreamUnlockedEvent = ContractEvent<{
+  export type StreamWithdrawnEvent = ContractEvent<{
     streamId: bigint;
     recipient: Address;
     tokenId: HexString;
@@ -77,7 +77,7 @@ class Factory extends ContractFactory<
     return this.contract.getInitialFieldsWithDefaultValues() as StreamFactoryTypes.Fields;
   }
 
-  eventIndex = { StreamCreated: 0, StreamUnlocked: 1, StreamCanceled: 2 };
+  eventIndex = { StreamCreated: 0, StreamWithdrawn: 1, StreamCanceled: 2 };
   consts = {
     StreamFactoryError: {
       NotAuthorized: BigInt(0),
@@ -87,7 +87,7 @@ class Factory extends ContractFactory<
       InvalidAmount: BigInt(4),
       InvalidStreamPeriod: BigInt(5),
       InvalidUnlockPercentage: BigInt(6),
-      InvalidUnlockAmount: BigInt(7),
+      InvalidWithdrawAmount: BigInt(7),
     },
   };
 
@@ -110,13 +110,13 @@ class Factory extends ContractFactory<
     ): Promise<TestContractResultWithoutMaps<null>> => {
       return testMethod(this, "createStream", params, getContractByCodeHash);
     },
-    unlockStream: async (
+    withdrawStream: async (
       params: TestContractParamsWithoutMaps<
         StreamFactoryTypes.Fields,
         { streamId: bigint; amount: bigint }
       >
     ): Promise<TestContractResultWithoutMaps<null>> => {
-      return testMethod(this, "unlockStream", params, getContractByCodeHash);
+      return testMethod(this, "withdrawStream", params, getContractByCodeHash);
     },
     cancelStream: async (
       params: TestContractParamsWithoutMaps<
@@ -134,7 +134,7 @@ export const StreamFactory = new Factory(
   Contract.fromJson(
     StreamFactoryContractJson,
     "",
-    "8a0d37b38432a28b581dd8dab77e326f576a370384904ab67dadabb167d26887",
+    "44bc686294582cdbf20da7ef5c98c790b1e95e90159ddf4a200bb1df87b54d86",
     AllStructs
   )
 );
@@ -166,15 +166,15 @@ export class StreamFactoryInstance extends ContractInstance {
     );
   }
 
-  subscribeStreamUnlockedEvent(
-    options: EventSubscribeOptions<StreamFactoryTypes.StreamUnlockedEvent>,
+  subscribeStreamWithdrawnEvent(
+    options: EventSubscribeOptions<StreamFactoryTypes.StreamWithdrawnEvent>,
     fromCount?: number
   ): EventSubscription {
     return subscribeContractEvent(
       StreamFactory.contract,
       this,
       options,
-      "StreamUnlocked",
+      "StreamWithdrawn",
       fromCount
     );
   }
@@ -195,7 +195,7 @@ export class StreamFactoryInstance extends ContractInstance {
   subscribeAllEvents(
     options: EventSubscribeOptions<
       | StreamFactoryTypes.StreamCreatedEvent
-      | StreamFactoryTypes.StreamUnlockedEvent
+      | StreamFactoryTypes.StreamWithdrawnEvent
       | StreamFactoryTypes.StreamCanceledEvent
     >,
     fromCount?: number

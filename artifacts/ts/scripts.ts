@@ -14,7 +14,7 @@ import {
 import { default as CancelStreamScriptJson } from "../scripts/CancelStream.ral.json";
 import { default as CreateCustomStreamScriptJson } from "../scripts/CreateCustomStream.ral.json";
 import { default as CreateLinearStreamScriptJson } from "../scripts/CreateLinearStream.ral.json";
-import { default as UnlockStreamScriptJson } from "../scripts/UnlockStream.ral.json";
+import { default as WithdrawStreamScriptJson } from "../scripts/WithdrawStream.ral.json";
 import { StreamConfig, AllStructs } from "./types";
 
 export const CancelStream = new ExecutableScript<{
@@ -43,8 +43,8 @@ export const CreateLinearStream = new ExecutableScript<{
   endTimestamp: bigint;
 }>(Script.fromJson(CreateLinearStreamScriptJson, "", AllStructs));
 
-export const UnlockStream = new ExecutableScript<{
+export const WithdrawStream = new ExecutableScript<{
   factory: HexString;
   id: bigint;
   amount: bigint;
-}>(Script.fromJson(UnlockStreamScriptJson, "", AllStructs));
+}>(Script.fromJson(WithdrawStreamScriptJson, "", AllStructs));

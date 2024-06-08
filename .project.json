@@ -11,7 +11,7 @@
   "infos": {
     "CancelStream": {
       "sourceFile": "scripts/manage-stream.ral",
-      "sourceCodeHash": "fa8bc8804cad0c7695cccaa3cb6871390e25d35437870414fdae5629f8f21c81",
+      "sourceCodeHash": "41ee4169e2d23f7f8fd86a4b0c76ebbe9e28fc3ebecaa36a8c24be908e2d1957",
       "bytecodeDebugPatch": "",
       "codeHashDebug": "",
       "warnings": []
@@ -46,14 +46,14 @@
     },
     "StreamFactory": {
       "sourceFile": "factory.ral",
-      "sourceCodeHash": "85ecdad7f992125f00e8206762eaef125e952e28af8cfc9ae4feffdac2a29597",
+      "sourceCodeHash": "ac4d2dd688f982034ceb7a03cb4472566f515a0560307778b33e7d17f9d3c888",
       "bytecodeDebugPatch": "",
-      "codeHashDebug": "8a0d37b38432a28b581dd8dab77e326f576a370384904ab67dadabb167d26887",
+      "codeHashDebug": "44bc686294582cdbf20da7ef5c98c790b1e95e90159ddf4a200bb1df87b54d86",
       "warnings": []
     },
-    "UnlockStream": {
+    "WithdrawStream": {
       "sourceFile": "scripts/manage-stream.ral",
-      "sourceCodeHash": "fa8bc8804cad0c7695cccaa3cb6871390e25d35437870414fdae5629f8f21c81",
+      "sourceCodeHash": "41ee4169e2d23f7f8fd86a4b0c76ebbe9e28fc3ebecaa36a8c24be908e2d1957",
       "bytecodeDebugPatch": "",
       "codeHashDebug": "",
       "warnings": []

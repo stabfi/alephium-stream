@@ -1,6 +1,6 @@
 {
   "version": "v3.0.2",
-  "name": "UnlockStream",
+  "name": "WithdrawStream",
   "bytecodeTemplate": "01010300000006{1}{2}0e0c{0}0101",
   "fieldsSig": {
     "names": [

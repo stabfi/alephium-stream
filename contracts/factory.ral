@@ -4,21 +4,21 @@ Contract StreamFactory(
 ) {
     // Event triggered when a new stream is created
     event StreamCreated(streamId: U256, creator: Address, recipient: Address, contractId: ByteVec)
-    // Event triggered when a stream is unlocked
-    event StreamUnlocked(streamId: U256, recipient: Address, tokenId: ByteVec, amount: U256)
+    // Event triggered when a stream is withdrawn
+    event StreamWithdrawn(streamId: U256, recipient: Address, tokenId: ByteVec, amount: U256)
     // Event triggered when a stream is canceled
     event StreamCanceled(streamId: U256, creator: Address, tokenId: ByteVec, amount: U256)
 
     // Enumeration of possible errors in StreamFactory
     enum StreamFactoryError {
         NotAuthorized = 0 // Caller is not authorized
-        NotAvailable = 1 // Stream is not available for unlocking
+        NotAvailable = 1 // Stream is not available for withdraw
         NotCancelable = 2 // Stream is not cancelable
         EmptyStream = 3 // Stream has no locked amount
         InvalidAmount = 4 // Provided amount is invalid
         InvalidStreamPeriod = 5 // Stream period is invalid
         InvalidUnlockPercentage = 6 // Unlock percentage is invalid
-        InvalidUnlockAmount = 7 // Unlock amount is invalid
+        InvalidWithdrawAmount = 7 // Withdraw amount is invalid
     }
 
     @using(preapprovedAssets = true, payToContractOnly = true, checkExternalCaller = false, updateFields = true)
@@ -73,7 +73,7 @@ Contract StreamFactory(
     }
 
     @using(assetsInContract = true)
-    pub fn unlockStream(streamId: U256, amount: U256) -> () {
+    pub fn withdrawStream(streamId: U256, amount: U256) -> () {
         // Get the sub-contract ID of the stream
         let path = toByteVec!(streamId)
         let contractId = subContractId!(path)
@@ -83,20 +83,20 @@ Contract StreamFactory(
         checkCaller!(callerAddress!() == recipient, StreamFactoryError.NotAuthorized)
 
         // Get the available amount to unlock and ensure there is an amount to unlock
-        let mut unlockAmount = Stream(contractId).getAvailableAmount()
-        assert!(unlockAmount > 0, StreamFactoryError.NotAvailable)
+        let mut unlockedAmount = Stream(contractId).getAvailableAmount()
+        assert!(unlockedAmount > 0, StreamFactoryError.NotAvailable)
 
         // Ensure the requested amount to unlock is valid
-        assert!(amount <= unlockAmount, StreamFactoryError.InvalidUnlockAmount)
+        assert!(amount <= unlockedAmount, StreamFactoryError.InvalidWithdrawAmount)
 
         // If a specific amount is requested, update the unlock amount
         if (amount != 0) {
-            unlockAmount = amount
+            unlockedAmount = amount
         }
 
         // Transfer the unlocked amount to the recipient and update the withdrwan amount in the stream
-        transferTokenFromSelf!(recipient, tokenId, unlockAmount)
-        Stream(contractId).addWithdrawnAmount(unlockAmount)
+        transferTokenFromSelf!(recipient, tokenId, unlockedAmount)
+        Stream(contractId).addWithdrawnAmount(unlockedAmount)
 
         // Get the remaining locked amount and destroy the stream sub-contract if no amount is left
         let remainingAmount = Stream(contractId).getLockedAmount()
@@ -104,8 +104,8 @@ Contract StreamFactory(
             Stream(contractId).destroyStream()
         }
 
-        // Emit event for stream unlocking
-        emit StreamUnlocked(streamId, recipient, tokenId, unlockAmount)
+        // Emit event for stream withdrawn
+        emit StreamWithdrawn(streamId, recipient, tokenId, unlockedAmount)
     }
 
     @using(assetsInContract = true)
