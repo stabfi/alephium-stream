@@ -32,14 +32,14 @@
     },
     "Stream": {
       "sourceFile": "stream.ral",
-      "sourceCodeHash": "00792a1e292e33a84ae60a3a4563a00e5d45290df59646c74593b0e756530179",
+      "sourceCodeHash": "a8a0f4d590da80134cfec2dc3a046246ba54a045408166c884285d74e4df00fd",
       "bytecodeDebugPatch": "",
-      "codeHashDebug": "a357696cfee44f14f3b9702b53b488ae3fb79e06a142930e0f6337e6440ef90e",
+      "codeHashDebug": "7d7e88b23ee716f5756632b93c213c231aa256ba981d999d4d3398421b5e055c",
       "warnings": []
     },
     "StreamConfig": {
       "sourceFile": "stream.ral",
-      "sourceCodeHash": "00792a1e292e33a84ae60a3a4563a00e5d45290df59646c74593b0e756530179",
+      "sourceCodeHash": "a8a0f4d590da80134cfec2dc3a046246ba54a045408166c884285d74e4df00fd",
       "bytecodeDebugPatch": "",
       "codeHashDebug": "",
       "warnings": []

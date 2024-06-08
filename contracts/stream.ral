@@ -52,11 +52,11 @@ Contract Stream(
             // Calculate the total duration of the stream
             let totalInterval = config.endTimestamp - config.startTimestamp
         
-            // Calculate the remaining amount to be unlocked
-            let remainingAmount = amount - withdrawnAmount
+            // Calculate the unlocked amount
+            let linearUnlockedAmount = (amount * timeElapsed) / totalInterval
         
-            // Calculate the available amount based on the elapsed time
-            return (remainingAmount * timeElapsed) / totalInterval
+            // Return the available amount
+            return linearUnlockedAmount - withdrawnAmount
         } else {
             // Calculate the time elapsed since the stream start
             let elapsed = timestamp - config.startTimestamp
@@ -69,14 +69,13 @@ Contract Stream(
                 unlocksCount = 100 / config.unlockPercentage
             }
         
-            // Calculate the amount to be unlocked based on the number of unlocks
-            let unlockAmount = unlocksCount * ((amount * config.unlockPercentage) / 100)
+            // Calculate the unlocked amount based on the number of unlocks
+            let customUnlockedAmount = (unlocksCount * amount * config.unlockPercentage) / 100
         
-            // Calculate the available amount
-            return unlockAmount - withdrawnAmount
+            // Return the available amount
+            return customUnlockedAmount - withdrawnAmount
         }
     }
-
     
     @using(updateFields = true)
     pub fn addWithdrawnAmount(value: U256) -> () {

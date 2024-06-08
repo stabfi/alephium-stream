@@ -159,7 +159,7 @@ export const Stream = new Factory(
   Contract.fromJson(
     StreamContractJson,
     "",
-    "a357696cfee44f14f3b9702b53b488ae3fb79e06a142930e0f6337e6440ef90e",
+    "7d7e88b23ee716f5756632b93c213c231aa256ba981d999d4d3398421b5e055c",
     AllStructs
   )
 );
