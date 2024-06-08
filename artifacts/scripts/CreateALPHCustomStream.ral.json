@@ -1,7 +1,7 @@
 {
   "version": "v3.0.2",
   "name": "CreateALPHCustomStream",
-  "bytecodeTemplate": "01010300000013b4{1}13c40de0b6b3a76400002aa2b4cd{1}{2}04{3}{4}0c{5}{6}130a0c{0}0100",
+  "bytecodeTemplate": "01010300000013b4{1}13c4016345785d8a00002aa2b4cd{1}{2}04{3}{4}0c{5}{6}130a0c{0}0100",
   "fieldsSig": {
     "names": [
       "factory",

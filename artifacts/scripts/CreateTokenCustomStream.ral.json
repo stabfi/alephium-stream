@@ -1,7 +1,7 @@
 {
   "version": "v3.0.2",
   "name": "CreateTokenCustomStream",
-  "bytecodeTemplate": "01010300000015b47a13c40de0b6b3a7640000a2{1}{2}a3b4{1}{2}{3}04{4}{5}0c{6}{7}130a0c{0}0100",
+  "bytecodeTemplate": "01010300000015b47a13c4016345785d8a0000a2{1}{2}a3b4{1}{2}{3}04{4}{5}0c{6}{7}130a0c{0}0100",
   "fieldsSig": {
     "names": [
       "factory",

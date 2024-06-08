@@ -6,7 +6,7 @@ TxScript CreateALPHLinearStream(
     startTimestamp: U256,
     endTimestamp: U256
 ) {
-    factory.createStream{callerAddress!() -> ALPH: amount + 1 alph}(
+    factory.createStream{callerAddress!() -> ALPH: amount + 0.1 alph}(
         callerAddress!(),
         ALPH,
         amount,
@@ -33,7 +33,7 @@ TxScript CreateALPHCustomStream(
     unlockInterval: U256,
     unlockPercentage: U256
 ) {
-    factory.createStream{callerAddress!() -> ALPH: amount + 1 alph}(
+    factory.createStream{callerAddress!() -> ALPH: amount + 0.1 alph}(
         callerAddress!(),
         ALPH,
         amount,
@@ -60,7 +60,7 @@ TxScript CreateTokenLinearStream(
     startTimestamp: U256,
     endTimestamp: U256
 ) {
-    factory.createStream{callerAddress!() -> ALPH: 1 alph, tokenId: amount}(
+    factory.createStream{callerAddress!() -> ALPH: 0.1 alph, tokenId: amount}(
         callerAddress!(),
         tokenId,
         amount,
@@ -88,7 +88,7 @@ TxScript CreateTokenCustomStream(
     unlockInterval: U256,
     unlockPercentage: U256
 ) {
-    factory.createStream{callerAddress!() -> ALPH: 1 alph, tokenId: amount}(
+    factory.createStream{callerAddress!() -> ALPH: 0.1 alph, tokenId: amount}(
         callerAddress!(),
         tokenId,
         amount,
