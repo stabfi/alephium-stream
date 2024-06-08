@@ -4,9 +4,7 @@ import { Deployer, DeployFunction } from '@alephium/cli'
 import { Settings } from '../alephium.config'
 import { Stream } from '../artifacts/ts'
 
-const deployStream: DeployFunction<Settings> = async (
-  deployer: Deployer,
-): Promise<void> => {
+const deployStream: DeployFunction<Settings> = async (deployer: Deployer): Promise<void> => {
   const deployment = await deployer.deployContract(Stream, {
     initialFields: {
       factoryContractId: ZERO_ADDRESS,
