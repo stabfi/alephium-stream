@@ -12,10 +12,8 @@ import {
   HexString,
 } from "@alephium/web3";
 import { default as CancelStreamScriptJson } from "../scripts/CancelStream.ral.json";
-import { default as CreateALPHCustomStreamScriptJson } from "../scripts/CreateALPHCustomStream.ral.json";
-import { default as CreateALPHLinearStreamScriptJson } from "../scripts/CreateALPHLinearStream.ral.json";
-import { default as CreateTokenCustomStreamScriptJson } from "../scripts/CreateTokenCustomStream.ral.json";
-import { default as CreateTokenLinearStreamScriptJson } from "../scripts/CreateTokenLinearStream.ral.json";
+import { default as CreateCustomStreamScriptJson } from "../scripts/CreateCustomStream.ral.json";
+import { default as CreateLinearStreamScriptJson } from "../scripts/CreateLinearStream.ral.json";
 import { default as UnlockStreamScriptJson } from "../scripts/UnlockStream.ral.json";
 import { StreamConfig, AllStructs } from "./types";
 
@@ -24,26 +22,7 @@ export const CancelStream = new ExecutableScript<{
   id: bigint;
 }>(Script.fromJson(CancelStreamScriptJson, "", AllStructs));
 
-export const CreateALPHCustomStream = new ExecutableScript<{
-  factory: HexString;
-  amount: bigint;
-  recipient: Address;
-  isCancelable: boolean;
-  startTimestamp: bigint;
-  unlockInterval: bigint;
-  unlockPercentage: bigint;
-}>(Script.fromJson(CreateALPHCustomStreamScriptJson, "", AllStructs));
-
-export const CreateALPHLinearStream = new ExecutableScript<{
-  factory: HexString;
-  amount: bigint;
-  recipient: Address;
-  isCancelable: boolean;
-  startTimestamp: bigint;
-  endTimestamp: bigint;
-}>(Script.fromJson(CreateALPHLinearStreamScriptJson, "", AllStructs));
-
-export const CreateTokenCustomStream = new ExecutableScript<{
+export const CreateCustomStream = new ExecutableScript<{
   factory: HexString;
   tokenId: HexString;
   amount: bigint;
@@ -52,9 +31,9 @@ export const CreateTokenCustomStream = new ExecutableScript<{
   startTimestamp: bigint;
   unlockInterval: bigint;
   unlockPercentage: bigint;
-}>(Script.fromJson(CreateTokenCustomStreamScriptJson, "", AllStructs));
+}>(Script.fromJson(CreateCustomStreamScriptJson, "", AllStructs));
 
-export const CreateTokenLinearStream = new ExecutableScript<{
+export const CreateLinearStream = new ExecutableScript<{
   factory: HexString;
   tokenId: HexString;
   amount: bigint;
@@ -62,7 +41,7 @@ export const CreateTokenLinearStream = new ExecutableScript<{
   isCancelable: boolean;
   startTimestamp: bigint;
   endTimestamp: bigint;
-}>(Script.fromJson(CreateTokenLinearStreamScriptJson, "", AllStructs));
+}>(Script.fromJson(CreateLinearStreamScriptJson, "", AllStructs));
 
 export const UnlockStream = new ExecutableScript<{
   factory: HexString;

@@ -1,25 +1,31 @@
 {
   "version": "v3.0.2",
-  "name": "CreateALPHLinearStream",
-  "bytecodeTemplate": "01010300000013b4{1}13c4016345785d8a00002aa2b4cd{1}{2}03{3}{4}{5}0c0c130a0c{0}0100",
+  "name": "CreateCustomStream",
+  "bytecodeTemplate": "01010300000015b47a13c4016345785d8a0000a2{1}{2}a3b4cd{2}{3}04{4}{5}0c{6}{7}130a0c{0}0100",
   "fieldsSig": {
     "names": [
       "factory",
+      "tokenId",
       "amount",
       "recipient",
       "isCancelable",
       "startTimestamp",
-      "endTimestamp"
+      "unlockInterval",
+      "unlockPercentage"
     ],
     "types": [
       "StreamFactory",
+      "ByteVec",
       "U256",
       "Address",
       "Bool",
       "U256",
+      "U256",
       "U256"
     ],
     "isMutable": [
+      false,
+      false,
       false,
       false,
       false,

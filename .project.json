@@ -16,30 +16,16 @@
       "codeHashDebug": "",
       "warnings": []
     },
-    "CreateALPHCustomStream": {
+    "CreateCustomStream": {
       "sourceFile": "scripts/create-stream.ral",
-      "sourceCodeHash": "66ecbf74307c28b6f6f07f61787b384c576ab83a3d5e1ca0481d91c14fee5015",
+      "sourceCodeHash": "5d7e048679636b8d4e448286d70e890ef8dddd81dc8cf8b84acdf455dba7821e",
       "bytecodeDebugPatch": "",
       "codeHashDebug": "",
       "warnings": []
     },
-    "CreateALPHLinearStream": {
+    "CreateLinearStream": {
       "sourceFile": "scripts/create-stream.ral",
-      "sourceCodeHash": "66ecbf74307c28b6f6f07f61787b384c576ab83a3d5e1ca0481d91c14fee5015",
-      "bytecodeDebugPatch": "",
-      "codeHashDebug": "",
-      "warnings": []
-    },
-    "CreateTokenCustomStream": {
-      "sourceFile": "scripts/create-stream.ral",
-      "sourceCodeHash": "66ecbf74307c28b6f6f07f61787b384c576ab83a3d5e1ca0481d91c14fee5015",
-      "bytecodeDebugPatch": "",
-      "codeHashDebug": "",
-      "warnings": []
-    },
-    "CreateTokenLinearStream": {
-      "sourceFile": "scripts/create-stream.ral",
-      "sourceCodeHash": "66ecbf74307c28b6f6f07f61787b384c576ab83a3d5e1ca0481d91c14fee5015",
+      "sourceCodeHash": "5d7e048679636b8d4e448286d70e890ef8dddd81dc8cf8b84acdf455dba7821e",
       "bytecodeDebugPatch": "",
       "codeHashDebug": "",
       "warnings": []

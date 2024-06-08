@@ -1,12 +1,13 @@
-TxScript CreateALPHLinearStream(
+TxScript CreateLinearStream(
     factory: StreamFactory,
+    tokenId: ByteVec,
     amount: U256,
     recipient: Address,
     isCancelable: Bool,
     startTimestamp: U256,
     endTimestamp: U256
 ) {
-    factory.createStream{callerAddress!() -> ALPH: amount + 0.1 alph}(
+    factory.createStream{callerAddress!() -> ALPH: 0.1 alph, tokenId: amount}(
         callerAddress!(),
         ALPH,
         amount,
@@ -24,8 +25,9 @@ TxScript CreateALPHLinearStream(
     )
 }
 
-TxScript CreateALPHCustomStream(
+TxScript CreateCustomStream(
     factory: StreamFactory,
+    tokenId: ByteVec,
     amount: U256,
     recipient: Address,
     isCancelable: Bool,
@@ -33,64 +35,9 @@ TxScript CreateALPHCustomStream(
     unlockInterval: U256,
     unlockPercentage: U256
 ) {
-    factory.createStream{callerAddress!() -> ALPH: amount + 0.1 alph}(
+    factory.createStream{callerAddress!() -> ALPH: 0.1 alph, tokenId: amount}(
         callerAddress!(),
         ALPH,
-        amount,
-        recipient,
-        StreamConfig {
-            isLinear: false,
-            isCancelable: isCancelable,
-
-            startTimestamp: startTimestamp,
-            endTimestamp: 0,
-
-            unlockInterval: unlockInterval,
-            unlockPercentage: unlockPercentage
-        }
-    )
-}
-
-TxScript CreateTokenLinearStream(
-    factory: StreamFactory,
-    tokenId: ByteVec,
-    amount: U256,
-    recipient: Address,
-    isCancelable: Bool,
-    startTimestamp: U256,
-    endTimestamp: U256
-) {
-    factory.createStream{callerAddress!() -> ALPH: 0.1 alph, tokenId: amount}(
-        callerAddress!(),
-        tokenId,
-        amount,
-        recipient,
-        StreamConfig {
-            isLinear: true,
-            isCancelable: isCancelable,
-
-            startTimestamp: startTimestamp,
-            endTimestamp: endTimestamp,
-
-            unlockInterval: 0,
-            unlockPercentage: 0
-        }
-    )
-}
-
-TxScript CreateTokenCustomStream(
-    factory: StreamFactory,
-    tokenId: ByteVec,
-    amount: U256,
-    recipient: Address,
-    isCancelable: Bool,
-    startTimestamp: U256,
-    unlockInterval: U256,
-    unlockPercentage: U256
-) {
-    factory.createStream{callerAddress!() -> ALPH: 0.1 alph, tokenId: amount}(
-        callerAddress!(),
-        tokenId,
         amount,
         recipient,
         StreamConfig {
