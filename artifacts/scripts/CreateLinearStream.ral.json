@@ -1,7 +1,7 @@
 {
   "version": "v3.0.2",
   "name": "CreateLinearStream",
-  "bytecodeTemplate": "01010300000015b47a13c4016345785d8a0000a2{1}{2}a3b4cd{2}{3}03{4}{5}{6}0c0c130a0c{0}0100",
+  "bytecodeTemplate": "01010300000015b47ad1a2{1}{2}a3b4cd{2}{3}03{4}{5}{6}0c0c130a0c{0}0100",
   "fieldsSig": {
     "names": [
       "factory",

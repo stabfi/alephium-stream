@@ -134,7 +134,7 @@ export const StreamFactory = new Factory(
   Contract.fromJson(
     StreamFactoryContractJson,
     "",
-    "44bc686294582cdbf20da7ef5c98c790b1e95e90159ddf4a200bb1df87b54d86",
+    "63406d8ede888d901f8a7b9711b94be7c0d0e6a1e9312dac8ecda6717ae4a864",
     AllStructs
   )
 );

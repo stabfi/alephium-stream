@@ -58,7 +58,7 @@ Contract StreamFactory(
         let path = toByteVec!(streamCounter)
 
         // Create a new sub-contract for the stream
-        let contractId = copyCreateSubContract!{caller -> ALPH: 0.1 alph}(
+        let contractId = copyCreateSubContract!{caller -> ALPH: minimalContractDeposit!()}(
             path,
             streamTemplateId,
             encodedImmutableFields,

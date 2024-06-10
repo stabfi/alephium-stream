@@ -7,7 +7,7 @@ TxScript CreateLinearStream(
     startTimestamp: U256,
     endTimestamp: U256
 ) {
-    factory.createStream{callerAddress!() -> ALPH: 0.1 alph, tokenId: amount}(
+    factory.createStream{callerAddress!() -> ALPH: minimalContractDeposit!(), tokenId: amount}(
         callerAddress!(),
         ALPH,
         amount,
@@ -35,7 +35,7 @@ TxScript CreateCustomStream(
     unlockInterval: U256,
     unlockPercentage: U256
 ) {
-    factory.createStream{callerAddress!() -> ALPH: 0.1 alph, tokenId: amount}(
+    factory.createStream{callerAddress!() -> ALPH: minimalContractDeposit!(), tokenId: amount}(
         callerAddress!(),
         ALPH,
         amount,
