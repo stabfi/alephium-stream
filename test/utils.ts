@@ -19,6 +19,11 @@ export const defaultStreamFields = {
   withdrawnAmount: 0n,
 }
 
+export const defaultStreamFactoryFields = {
+  streamTemplateId: '',
+  streamCounter: 1n,
+}
+
 export const ONE_DAY = 24 * 60 * 60 * 1_000
 
 export const defaultNodeProvider = new NodeProvider(process.env.NODE_URL || '')
