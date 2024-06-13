@@ -17,8 +17,9 @@ Contract StreamFactory(
         EmptyStream = 3 // Stream has no locked amount
         InvalidAmount = 4 // Provided amount is invalid
         InvalidStreamPeriod = 5 // Stream period is invalid
-        InvalidUnlockPercentage = 6 // Unlock percentage is invalid
-        InvalidWithdrawAmount = 7 // Withdraw amount is invalid
+        InvalidUnlockInterval = 6 // Unlock interval is invalid
+        InvalidUnlockPercentage = 7 // Unlock percentage is invalid
+        InvalidWithdrawAmount = 8 // Withdraw amount is invalid
     }
 
     @using(preapprovedAssets = true, payToContractOnly = true, checkExternalCaller = false, updateFields = true)
@@ -39,7 +40,11 @@ Contract StreamFactory(
         if (config.isLinear) {
             assert!(config.endTimestamp > config.startTimestamp, StreamFactoryError.InvalidStreamPeriod)
         } else {
+            // Validate unlock interval for non-linear streams
+            assert!(config.unlockInterval > 0, StreamFactoryError.InvalidUnlockInterval)
+
             // Validate unlock percentage for non-linear streams
+            assert!(config.unlockPercentage > 0, StreamFactoryError.InvalidUnlockPercentage)
             assert!(100 % config.unlockPercentage == 0, StreamFactoryError.InvalidUnlockPercentage)
         }
 
