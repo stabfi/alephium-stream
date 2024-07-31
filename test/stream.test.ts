@@ -49,7 +49,6 @@ describe('[UNIT] Stream', () => {
             amount: 1_000_000n,
             config: {
               ...defaultStreamFields.config,
-              isLinear: true,
               startTimestamp: BigInt(startTimestamp),
               endTimestamp: BigInt(endTimestamp),
             },
@@ -72,7 +71,6 @@ describe('[UNIT] Stream', () => {
             amount: 1_000_000n,
             config: {
               ...defaultStreamFields.config,
-              isLinear: true,
               startTimestamp: BigInt(startTimestamp),
               endTimestamp: BigInt(endTimestamp),
             },
@@ -84,14 +82,14 @@ describe('[UNIT] Stream', () => {
       })
     })
 
-    describe('Custom unlock model', () => {
+    describe('Interval unlock model', () => {
+      const unlockInterval = 100
+      const unlockPercentage = 10
+
       it('should correctly calculate the available amount in the middle of the period', async () => {
         const timestamp = Date.now()
 
         const startTimestamp = timestamp - 500
-
-        const unlockInterval = 100
-        const unlockPercentage = 10
 
         const call = await Stream.tests.getAvailableAmount({
           initialFields: {
@@ -99,6 +97,7 @@ describe('[UNIT] Stream', () => {
             amount: 1_000_000n,
             config: {
               ...defaultStreamFields.config,
+              kind: 1n,
               startTimestamp: BigInt(startTimestamp),
               unlockInterval: BigInt(unlockInterval),
               unlockPercentage: BigInt(unlockPercentage),
@@ -115,15 +114,13 @@ describe('[UNIT] Stream', () => {
 
         const startTimestamp = timestamp - 1_500
 
-        const unlockInterval = 100
-        const unlockPercentage = 10
-
         const call = await Stream.tests.getAvailableAmount({
           initialFields: {
             ...defaultStreamFields,
             amount: 1_000_000n,
             config: {
               ...defaultStreamFields.config,
+              kind: 1n,
               startTimestamp: BigInt(startTimestamp),
               unlockInterval: BigInt(unlockInterval),
               unlockPercentage: BigInt(unlockPercentage),
@@ -133,6 +130,102 @@ describe('[UNIT] Stream', () => {
         })
 
         expect(call.returns).toEqual(1_000_000n)
+      })
+    })
+
+    describe('Custom unlock model', () => {
+      const timestamp = Date.now()
+
+      let unlockSteps = ''
+      unlockSteps += BigInt(timestamp + 1_000)
+        .toString(16)
+        .padStart(64, '0')
+      unlockSteps += 100n.toString(16).padStart(64, '0')
+
+      unlockSteps += BigInt(timestamp + 2_000)
+        .toString(16)
+        .padStart(64, '0')
+      unlockSteps += 200n.toString(16).padStart(64, '0')
+
+      unlockSteps += BigInt(timestamp + 3_000)
+        .toString(16)
+        .padStart(64, '0')
+      unlockSteps += 300n.toString(16).padStart(64, '0')
+
+      it('should correctly calculate the available amount before the first unlock step', async () => {
+        const blockTimeStamp = timestamp - 500
+
+        const call = await Stream.tests.getAvailableAmount({
+          initialFields: {
+            ...defaultStreamFields,
+            amount: 1_000_000n,
+            config: {
+              ...defaultStreamFields.config,
+              kind: 2n,
+              unlockSteps,
+            },
+          },
+          blockTimeStamp,
+        })
+
+        expect(call.returns).toEqual(0n)
+      })
+
+      it('should correctly calculate the available amount after first unlock step', async () => {
+        const blockTimeStamp = timestamp + 1_500
+
+        const call = await Stream.tests.getAvailableAmount({
+          initialFields: {
+            ...defaultStreamFields,
+            amount: 1_000_000n,
+            config: {
+              ...defaultStreamFields.config,
+              kind: 2n,
+              unlockSteps,
+            },
+          },
+          blockTimeStamp,
+        })
+
+        expect(call.returns).toEqual(100n)
+      })
+
+      it('should correctly calculate the available amount after second unlock step', async () => {
+        const blockTimeStamp = timestamp + 2_500
+
+        const call = await Stream.tests.getAvailableAmount({
+          initialFields: {
+            ...defaultStreamFields,
+            amount: 1_000_000n,
+            config: {
+              ...defaultStreamFields.config,
+              kind: 2n,
+              unlockSteps,
+            },
+          },
+          blockTimeStamp,
+        })
+
+        expect(call.returns).toEqual(100n + 200n)
+      })
+
+      it('should correctly calculate the available amount after all unlock steps', async () => {
+        const blockTimeStamp = timestamp + 60_000
+
+        const call = await Stream.tests.getAvailableAmount({
+          initialFields: {
+            ...defaultStreamFields,
+            amount: 1_000_000n,
+            config: {
+              ...defaultStreamFields.config,
+              kind: 2n,
+              unlockSteps,
+            },
+          },
+          blockTimeStamp,
+        })
+
+        expect(call.returns).toEqual(100n + 200n + 300n)
       })
     })
   })

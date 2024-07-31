@@ -1,5 +1,5 @@
 {
-  "fullNodeVersion": "v3.1.2",
+  "fullNodeVersion": "v3.4.1",
   "compilerOptionsUsed": {
     "ignoreUnusedConstantsWarnings": false,
     "ignoreUnusedVariablesWarnings": false,
@@ -18,37 +18,44 @@
     },
     "CreateCustomStream": {
       "sourceFile": "scripts/create-stream.ral",
-      "sourceCodeHash": "e95db8398b94c5ad96e6dc3b9fbb56951b52f680969926d539c77732d9d70293",
+      "sourceCodeHash": "4147c11d72dfc5eb0a084553267424381dfbe139a18ea762449a6d5a15a2732b",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "",
+      "warnings": []
+    },
+    "CreateIntervalStream": {
+      "sourceFile": "scripts/create-stream.ral",
+      "sourceCodeHash": "4147c11d72dfc5eb0a084553267424381dfbe139a18ea762449a6d5a15a2732b",
       "bytecodeDebugPatch": "",
       "codeHashDebug": "",
       "warnings": []
     },
     "CreateLinearStream": {
       "sourceFile": "scripts/create-stream.ral",
-      "sourceCodeHash": "e95db8398b94c5ad96e6dc3b9fbb56951b52f680969926d539c77732d9d70293",
+      "sourceCodeHash": "4147c11d72dfc5eb0a084553267424381dfbe139a18ea762449a6d5a15a2732b",
       "bytecodeDebugPatch": "",
       "codeHashDebug": "",
       "warnings": []
     },
     "Stream": {
       "sourceFile": "stream.ral",
-      "sourceCodeHash": "a8a0f4d590da80134cfec2dc3a046246ba54a045408166c884285d74e4df00fd",
+      "sourceCodeHash": "f557b27b8b73ed9eee183f4c1526c0c3be268b835aef6978f96468ed0fe82ae5",
       "bytecodeDebugPatch": "",
-      "codeHashDebug": "7d7e88b23ee716f5756632b93c213c231aa256ba981d999d4d3398421b5e055c",
+      "codeHashDebug": "5d6dd75c9fa913cc5e140be6774174b0acbbedafa532ef1ad33eab6b42a92e62",
       "warnings": []
     },
     "StreamConfig": {
       "sourceFile": "stream.ral",
-      "sourceCodeHash": "a8a0f4d590da80134cfec2dc3a046246ba54a045408166c884285d74e4df00fd",
+      "sourceCodeHash": "f557b27b8b73ed9eee183f4c1526c0c3be268b835aef6978f96468ed0fe82ae5",
       "bytecodeDebugPatch": "",
       "codeHashDebug": "",
       "warnings": []
     },
     "StreamFactory": {
       "sourceFile": "factory.ral",
-      "sourceCodeHash": "1fa6c92a938d945f96a4c3088374fe2bb4be118f621f8c919542a1acf917d8f9",
+      "sourceCodeHash": "3da9d0af38311ced83bf35f36a40895f10b2b4a2ab089a3723015b927fc0dbae",
       "bytecodeDebugPatch": "",
-      "codeHashDebug": "de84d699cf891381f02577e25676e6524a952fb78f032bc26ebcf83d59863989",
+      "codeHashDebug": "18014dae64f624eaa4d284745b1bc9e6dfbbf4943e8d4970ce1ad3dcf76d3c22",
       "warnings": []
     },
     "WithdrawStream": {

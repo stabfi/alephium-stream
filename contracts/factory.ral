@@ -12,14 +12,16 @@ Contract StreamFactory(
     // Enumeration of possible errors in StreamFactory
     enum StreamFactoryError {
         NotAuthorized = 0 // Caller is not authorized
-        NotAvailable = 1 // Stream is not available for withdraw
+        NotAvailable = 1 // Stream is not available for withdrawal
         NotCancelable = 2 // Stream is not cancelable
-        EmptyStream = 3 // Stream has no locked amount
-        InvalidAmount = 4 // Provided amount is invalid
-        InvalidStreamPeriod = 5 // Stream period is invalid
-        InvalidUnlockInterval = 6 // Unlock interval is invalid
-        InvalidUnlockPercentage = 7 // Unlock percentage is invalid
-        InvalidWithdrawAmount = 8 // Withdraw amount is invalid
+        EmptyStream = 4 // Stream has no locked amount
+        InvalidAmount = 5 // Provided amount is invalid
+        InvalidStreamPeriod = 6 // Stream period is invalid
+        InvalidUnlockInterval = 7 // Unlock interval is invalid
+        InvalidUnlockPercentage = 8 // Unlock percentage is invalid
+        InvalidUnlockStepsLength = 9 // Unlock steps length is invalid
+        InvalidUnlockStepsOrder = 10 // Unlock steps order is invalid
+        InvalidWithdrawAmount = 11 // Withdraw amount is invalid
     }
 
     @using(preapprovedAssets = true, payToContractOnly = true, checkExternalCaller = false, updateFields = true)
@@ -36,16 +38,49 @@ Contract StreamFactory(
         // Ensure the amount is greater than zero
         assert!(amount > 0, StreamFactoryError.InvalidAmount)
 
-        // Check if stream is linear and validate the period
-        if (config.isLinear) {
+        // Validate stream configuration
+        if (config.kind == 0) {
             assert!(config.endTimestamp > config.startTimestamp, StreamFactoryError.InvalidStreamPeriod)
-        } else {
-            // Validate unlock interval for non-linear streams
+        }
+
+        if (config.kind == 1) {
+            // Validate unlock interval for interval streams
             assert!(config.unlockInterval > 0, StreamFactoryError.InvalidUnlockInterval)
 
-            // Validate unlock percentage for non-linear streams
+            // Validate unlock percentage for interval streams
             assert!(config.unlockPercentage > 0, StreamFactoryError.InvalidUnlockPercentage)
             assert!(100 % config.unlockPercentage == 0, StreamFactoryError.InvalidUnlockPercentage)
+        }
+
+        if (config.kind == 2) {
+            // Ensure the unlock steps array is not empty and its size is a multiple of 64 bytes
+            assert!(size!(config.unlockSteps) > 0, StreamFactoryError.InvalidUnlockStepsLength)
+            assert!(size!(config.unlockSteps) % 64 == 0, StreamFactoryError.InvalidUnlockStepsLength)
+
+            let stepsCount = size!(config.unlockSteps) / 64
+            let mut offset = 0
+            let mut lastTimestamp = 0
+
+            // Loop through each unlock step
+            while (offset < stepsCount) {
+                let start = offset * 64
+                let end = (offset + 1) * 64
+
+                // Extract the timestamp and amount for each step
+                let stepTimestamp = u256From32Byte!(byteVecSlice!(config.unlockSteps, start, (end - 32)))
+                let stepAmount = u256From32Byte!(byteVecSlice!(config.unlockSteps, start + 32, end))
+
+                // Validate the order of the unlock steps and the amount
+                assert!(stepTimestamp > lastTimestamp, StreamFactoryError.InvalidUnlockStepsOrder)
+                assert!(stepAmount > 0, StreamFactoryError.InvalidAmount)
+
+                lastTimestamp = stepTimestamp
+                offset = offset + 1
+            }
+        }
+
+        if (config.kind >= 3) {
+            panic!()
         }
 
         // Encode immutable and mutable fields for the stream
@@ -82,7 +117,7 @@ Contract StreamFactory(
         // Get the sub-contract ID of the stream
         let path = toByteVec!(streamId)
         let contractId = subContractId!(path)
-        
+
         // Retrieve stream details and ensure the caller is the recipient
         let (_, recipient, tokenId, _) = Stream(contractId).getStreamDetails()
         checkCaller!(callerAddress!() == recipient, StreamFactoryError.NotAuthorized)
@@ -99,7 +134,7 @@ Contract StreamFactory(
             unlockedAmount = amount
         }
 
-        // Transfer the unlocked amount to the recipient and update the withdrwan amount in the stream
+        // Transfer the unlocked amount to the recipient and update the withdrawn amount in the stream
         transferTokenFromSelf!(recipient, tokenId, unlockedAmount)
         Stream(contractId).addWithdrawnAmount(unlockedAmount)
 
@@ -109,7 +144,7 @@ Contract StreamFactory(
             Stream(contractId).destroyStream()
         }
 
-        // Emit event for stream withdrawn
+        // Emit event for stream withdrawal
         emit StreamWithdrawn(streamId, recipient, tokenId, unlockedAmount)
     }
 

@@ -9,7 +9,7 @@ const deployStreamFactory: DeployFunction<Settings> = async (deployer: Deployer)
   const deployment = await deployer.deployContract(StreamFactory, {
     initialFields: {
       streamTemplateId: streamDeployment.contractInstance.contractId,
-      streamCounter: 1,
+      streamCounter: 1n,
     },
   })
 

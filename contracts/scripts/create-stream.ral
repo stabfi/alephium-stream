@@ -13,19 +13,22 @@ TxScript CreateLinearStream(
         amount,
         recipient,
         StreamConfig {
-            isLinear: true,
+            kind: 0,
+
             isCancelable: isCancelable,
 
             startTimestamp: startTimestamp,
             endTimestamp: endTimestamp,
 
             unlockInterval: 0,
-            unlockPercentage: 0
+            unlockPercentage: 0,
+
+            unlockSteps: #
         }
     )
 }
 
-TxScript CreateCustomStream(
+TxScript CreateIntervalStream(
     factory: StreamFactory,
     tokenId: ByteVec,
     amount: U256,
@@ -41,14 +44,47 @@ TxScript CreateCustomStream(
         amount,
         recipient,
         StreamConfig {
-            isLinear: false,
+            kind: 1,
+
             isCancelable: isCancelable,
 
             startTimestamp: startTimestamp,
             endTimestamp: 0,
 
             unlockInterval: unlockInterval,
-            unlockPercentage: unlockPercentage
+            unlockPercentage: unlockPercentage,
+
+            unlockSteps: #
+        }
+    )
+}
+
+TxScript CreateCustomStream(
+    factory: StreamFactory,
+    tokenId: ByteVec,
+    amount: U256,
+    recipient: Address,
+    isCancelable: Bool,
+    startTimestamp: U256,
+    unlockSteps: ByteVec
+) {
+    factory.createStream{callerAddress!() -> ALPH: minimalContractDeposit!(), tokenId: amount}(
+        callerAddress!(),
+        ALPH,
+        amount,
+        recipient,
+        StreamConfig {
+            kind: 2,
+
+            isCancelable: isCancelable,
+
+            startTimestamp: startTimestamp,
+            endTimestamp: 0,
+
+            unlockInterval: 0,
+            unlockPercentage: 0,
+
+            unlockSteps: unlockSteps
         }
     )
 }

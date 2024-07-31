@@ -25,6 +25,9 @@ import {
   getContractEventsCurrentCount,
   TestContractParamsWithoutMaps,
   TestContractResultWithoutMaps,
+  SignExecuteContractMethodParams,
+  SignExecuteScriptTxResult,
+  signExecuteMethod,
   addStdIdToFields,
   encodeContractFields,
 } from "@alephium/web3";
@@ -59,6 +62,67 @@ export namespace StreamFactoryTypes {
     tokenId: HexString;
     amount: bigint;
   }>;
+
+  export interface CallMethodTable {
+    createStream: {
+      params: CallContractParams<{
+        caller: Address;
+        tokenId: HexString;
+        amount: bigint;
+        recipient: Address;
+        config: StreamConfig;
+      }>;
+      result: CallContractResult<null>;
+    };
+    withdrawStream: {
+      params: CallContractParams<{ streamId: bigint; amount: bigint }>;
+      result: CallContractResult<null>;
+    };
+    cancelStream: {
+      params: CallContractParams<{ streamId: bigint }>;
+      result: CallContractResult<null>;
+    };
+  }
+  export type CallMethodParams<T extends keyof CallMethodTable> =
+    CallMethodTable[T]["params"];
+  export type CallMethodResult<T extends keyof CallMethodTable> =
+    CallMethodTable[T]["result"];
+  export type MultiCallParams = Partial<{
+    [Name in keyof CallMethodTable]: CallMethodTable[Name]["params"];
+  }>;
+  export type MultiCallResults<T extends MultiCallParams> = {
+    [MaybeName in keyof T]: MaybeName extends keyof CallMethodTable
+      ? CallMethodTable[MaybeName]["result"]
+      : undefined;
+  };
+
+  export interface SignExecuteMethodTable {
+    createStream: {
+      params: SignExecuteContractMethodParams<{
+        caller: Address;
+        tokenId: HexString;
+        amount: bigint;
+        recipient: Address;
+        config: StreamConfig;
+      }>;
+      result: SignExecuteScriptTxResult;
+    };
+    withdrawStream: {
+      params: SignExecuteContractMethodParams<{
+        streamId: bigint;
+        amount: bigint;
+      }>;
+      result: SignExecuteScriptTxResult;
+    };
+    cancelStream: {
+      params: SignExecuteContractMethodParams<{ streamId: bigint }>;
+      result: SignExecuteScriptTxResult;
+    };
+  }
+  export type SignExecuteMethodParams<T extends keyof SignExecuteMethodTable> =
+    SignExecuteMethodTable[T]["params"];
+  export type SignExecuteMethodResult<T extends keyof SignExecuteMethodTable> =
+    SignExecuteMethodTable[T]["result"];
 }
 
 class Factory extends ContractFactory<
@@ -80,15 +144,17 @@ class Factory extends ContractFactory<
   eventIndex = { StreamCreated: 0, StreamWithdrawn: 1, StreamCanceled: 2 };
   consts = {
     StreamFactoryError: {
-      NotAuthorized: BigInt(0),
-      NotAvailable: BigInt(1),
-      NotCancelable: BigInt(2),
-      EmptyStream: BigInt(3),
-      InvalidAmount: BigInt(4),
-      InvalidStreamPeriod: BigInt(5),
-      InvalidUnlockInterval: BigInt(6),
-      InvalidUnlockPercentage: BigInt(7),
-      InvalidWithdrawAmount: BigInt(8),
+      NotAuthorized: BigInt("0"),
+      NotAvailable: BigInt("1"),
+      NotCancelable: BigInt("2"),
+      EmptyStream: BigInt("4"),
+      InvalidAmount: BigInt("5"),
+      InvalidStreamPeriod: BigInt("6"),
+      InvalidUnlockInterval: BigInt("7"),
+      InvalidUnlockPercentage: BigInt("8"),
+      InvalidUnlockStepsLength: BigInt("9"),
+      InvalidUnlockStepsOrder: BigInt("10"),
+      InvalidWithdrawAmount: BigInt("11"),
     },
   };
 
@@ -135,7 +201,7 @@ export const StreamFactory = new Factory(
   Contract.fromJson(
     StreamFactoryContractJson,
     "",
-    "de84d699cf891381f02577e25676e6524a952fb78f032bc26ebcf83d59863989",
+    "18014dae64f624eaa4d284745b1bc9e6dfbbf4943e8d4970ce1ad3dcf76d3c22",
     AllStructs
   )
 );
@@ -208,4 +274,60 @@ export class StreamFactoryInstance extends ContractInstance {
       fromCount
     );
   }
+
+  view = {
+    createStream: async (
+      params: StreamFactoryTypes.CallMethodParams<"createStream">
+    ): Promise<StreamFactoryTypes.CallMethodResult<"createStream">> => {
+      return callMethod(
+        StreamFactory,
+        this,
+        "createStream",
+        params,
+        getContractByCodeHash
+      );
+    },
+    withdrawStream: async (
+      params: StreamFactoryTypes.CallMethodParams<"withdrawStream">
+    ): Promise<StreamFactoryTypes.CallMethodResult<"withdrawStream">> => {
+      return callMethod(
+        StreamFactory,
+        this,
+        "withdrawStream",
+        params,
+        getContractByCodeHash
+      );
+    },
+    cancelStream: async (
+      params: StreamFactoryTypes.CallMethodParams<"cancelStream">
+    ): Promise<StreamFactoryTypes.CallMethodResult<"cancelStream">> => {
+      return callMethod(
+        StreamFactory,
+        this,
+        "cancelStream",
+        params,
+        getContractByCodeHash
+      );
+    },
+  };
+
+  transact = {
+    createStream: async (
+      params: StreamFactoryTypes.SignExecuteMethodParams<"createStream">
+    ): Promise<StreamFactoryTypes.SignExecuteMethodResult<"createStream">> => {
+      return signExecuteMethod(StreamFactory, this, "createStream", params);
+    },
+    withdrawStream: async (
+      params: StreamFactoryTypes.SignExecuteMethodParams<"withdrawStream">
+    ): Promise<
+      StreamFactoryTypes.SignExecuteMethodResult<"withdrawStream">
+    > => {
+      return signExecuteMethod(StreamFactory, this, "withdrawStream", params);
+    },
+    cancelStream: async (
+      params: StreamFactoryTypes.SignExecuteMethodParams<"cancelStream">
+    ): Promise<StreamFactoryTypes.SignExecuteMethodResult<"cancelStream">> => {
+      return signExecuteMethod(StreamFactory, this, "cancelStream", params);
+    },
+  };
 }
