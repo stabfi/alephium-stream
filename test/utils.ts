@@ -7,7 +7,8 @@ export const defaultStreamFields = {
   tokenId: '',
   amount: 0n,
   config: {
-    isLinear: false,
+    kind: 0n,
+
     isCancelable: false,
 
     startTimestamp: 0n,
@@ -15,6 +16,8 @@ export const defaultStreamFields = {
 
     unlockInterval: 0n,
     unlockPercentage: 0n,
+
+    unlockSteps: '',
   },
   withdrawnAmount: 0n,
 }
