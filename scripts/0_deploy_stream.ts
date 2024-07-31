@@ -15,6 +15,7 @@ const deployStream: DeployFunction<Settings> = async (deployer: Deployer): Promi
       config: {
         kind: 0n,
         isCancelable: false,
+        isTransferable: false,
         startTimestamp: 0n,
         endTimestamp: 0n,
         unlockInterval: 0n,
