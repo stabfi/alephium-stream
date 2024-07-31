@@ -1,15 +1,19 @@
 // Configuration for a stream
 struct StreamConfig {
-    isLinear: Bool, // Indicates if the stream is linear
-    isCancelable: Bool, // Indicates if the stream is cancelable
+    kind: U256, // 0 - Linear, 1 - Interval, 2 - Custom
 
-    // Stream period
-    startTimestamp: U256, // Start timestamp of the stream
-    endTimestamp: U256, // End timestamp of the stream
-    
-    // Custom rules for unlocking
+    isCancelable: Bool, // Indicates if the stream is cancelable
+    startTimestamp: U256, // Start timestamo of the stream
+
+    // Linear stream settings
+    endTimestamp: U256, // End timestamp of the linear stream
+
+    // Interval stream settings
     unlockInterval: U256, // Interval for unlocking
-    unlockPercentage: U256 // Percentage to unlock at each interval
+    unlockPercentage: U256, // Percentage to unlock at each interval
+    
+    // Custom stream settings
+    unlockSteps: ByteVec // Unlock steps of the custom stream
 }
 
 Contract Stream(
@@ -23,7 +27,8 @@ Contract Stream(
 ) {
     // Enumeration of possible errors in Stream
     enum StreamError {
-        NotAuthorized = 0 // Caller is not authorized
+        UnknownKind = 0 // Unknown stream kind
+        NotAuthorized = 1 // Caller is not authorized
     }
 
     // Function to get stream details
@@ -45,7 +50,7 @@ Contract Stream(
         }
         
         // Check if the stream is linear
-        if (config.isLinear) {
+        if (config.kind == 0) {
             // Calculate the time elapsed since the stream start (limited by endTimestamp)
             let timeElapsed = (if (timestamp > config.endTimestamp) config.endTimestamp else timestamp) - config.startTimestamp
         
@@ -57,7 +62,9 @@ Contract Stream(
         
             // Return the available amount
             return linearUnlockedAmount - withdrawnAmount
-        } else {
+        }
+        
+        if (config.kind == 1) {
             // Calculate the time elapsed since the stream start
             let elapsed = timestamp - config.startTimestamp
         
@@ -75,6 +82,36 @@ Contract Stream(
             // Return the available amount
             return customUnlockedAmount - withdrawnAmount
         }
+        
+        if (config.kind == 2) {
+            let stepsCount = size!(config.unlockSteps) / 64
+            let mut offset = 0
+
+            // Unlocked amount based on the steps
+            let mut stepsUnlockedAmount = 0
+
+            // Loop through each unlock step
+            while (offset < stepsCount) {
+                let start = offset * 64
+                let end = (offset + 1) * 64
+
+                // Extract the timestamp and amount for each step
+                let stepTimestamp = u256From32Byte!(byteVecSlice!(config.unlockSteps, start, (end - 32)))
+                let stepAmount = u256From32Byte!(byteVecSlice!(config.unlockSteps, start + 32, end))
+
+                if (stepTimestamp <= timestamp) {
+                    stepsUnlockedAmount = stepsUnlockedAmount + stepAmount
+                } else {
+                    return stepsUnlockedAmount - withdrawnAmount
+                }
+
+                offset = offset + 1
+            }
+
+            return stepsUnlockedAmount - withdrawnAmount
+        }
+
+        panic!(StreamError.UnknownKind)
     }
     
     @using(updateFields = true)
