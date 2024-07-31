@@ -16,6 +16,7 @@ import { default as CancelStreamScriptJson } from "../scripts/CancelStream.ral.j
 import { default as CreateCustomStreamScriptJson } from "../scripts/CreateCustomStream.ral.json";
 import { default as CreateIntervalStreamScriptJson } from "../scripts/CreateIntervalStream.ral.json";
 import { default as CreateLinearStreamScriptJson } from "../scripts/CreateLinearStream.ral.json";
+import { default as TransferStreamScriptJson } from "../scripts/TransferStream.ral.json";
 import { default as WithdrawStreamScriptJson } from "../scripts/WithdrawStream.ral.json";
 import { StreamConfig, AllStructs } from "./types";
 
@@ -33,6 +34,7 @@ export const CreateCustomStream = new ExecutableScript<{
   amount: bigint;
   recipient: Address;
   isCancelable: boolean;
+  isTransferable: boolean;
   startTimestamp: bigint;
   unlockSteps: HexString;
 }>(
@@ -46,6 +48,7 @@ export const CreateIntervalStream = new ExecutableScript<{
   amount: bigint;
   recipient: Address;
   isCancelable: boolean;
+  isTransferable: boolean;
   startTimestamp: bigint;
   unlockInterval: bigint;
   unlockPercentage: bigint;
@@ -60,10 +63,20 @@ export const CreateLinearStream = new ExecutableScript<{
   amount: bigint;
   recipient: Address;
   isCancelable: boolean;
+  isTransferable: boolean;
   startTimestamp: bigint;
   endTimestamp: bigint;
 }>(
   Script.fromJson(CreateLinearStreamScriptJson, "", AllStructs),
+  getContractByCodeHash
+);
+
+export const TransferStream = new ExecutableScript<{
+  factory: HexString;
+  id: bigint;
+  newRecipient: Address;
+}>(
+  Script.fromJson(TransferStreamScriptJson, "", AllStructs),
   getContractByCodeHash
 );
 

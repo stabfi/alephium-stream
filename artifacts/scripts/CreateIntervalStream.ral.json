@@ -1,7 +1,7 @@
 {
   "version": "v3.4.1",
   "name": "CreateIntervalStream",
-  "bytecodeTemplate": "01010300000016b47ad1a2{1}{2}a3b4cd{2}{3}0d{4}{5}0c{6}{7}1400130b0c{0}0100",
+  "bytecodeTemplate": "01010300000017b47ad1a2{1}{2}a3b4cd{2}{3}0d{4}{5}{6}0c{7}{8}1400130c0c{0}0100",
   "fieldsSig": {
     "names": [
       "factory",
@@ -9,6 +9,7 @@
       "amount",
       "recipient",
       "isCancelable",
+      "isTransferable",
       "startTimestamp",
       "unlockInterval",
       "unlockPercentage"
@@ -19,11 +20,13 @@
       "U256",
       "Address",
       "Bool",
+      "Bool",
       "U256",
       "U256",
       "U256"
     ],
     "isMutable": [
+      false,
       false,
       false,
       false,

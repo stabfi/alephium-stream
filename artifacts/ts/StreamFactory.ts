@@ -62,6 +62,10 @@ export namespace StreamFactoryTypes {
     tokenId: HexString;
     amount: bigint;
   }>;
+  export type StreamTransferredEvent = ContractEvent<{
+    streamId: bigint;
+    recipient: Address;
+  }>;
 
   export interface CallMethodTable {
     createStream: {
@@ -76,6 +80,10 @@ export namespace StreamFactoryTypes {
     };
     withdrawStream: {
       params: CallContractParams<{ streamId: bigint; amount: bigint }>;
+      result: CallContractResult<null>;
+    };
+    transferStream: {
+      params: CallContractParams<{ streamId: bigint; newRecipient: Address }>;
       result: CallContractResult<null>;
     };
     cancelStream: {
@@ -114,6 +122,13 @@ export namespace StreamFactoryTypes {
       }>;
       result: SignExecuteScriptTxResult;
     };
+    transferStream: {
+      params: SignExecuteContractMethodParams<{
+        streamId: bigint;
+        newRecipient: Address;
+      }>;
+      result: SignExecuteScriptTxResult;
+    };
     cancelStream: {
       params: SignExecuteContractMethodParams<{ streamId: bigint }>;
       result: SignExecuteScriptTxResult;
@@ -141,12 +156,18 @@ class Factory extends ContractFactory<
     return this.contract.getInitialFieldsWithDefaultValues() as StreamFactoryTypes.Fields;
   }
 
-  eventIndex = { StreamCreated: 0, StreamWithdrawn: 1, StreamCanceled: 2 };
+  eventIndex = {
+    StreamCreated: 0,
+    StreamWithdrawn: 1,
+    StreamCanceled: 2,
+    StreamTransferred: 3,
+  };
   consts = {
     StreamFactoryError: {
       NotAuthorized: BigInt("0"),
       NotAvailable: BigInt("1"),
       NotCancelable: BigInt("2"),
+      NotTransferable: BigInt("3"),
       EmptyStream: BigInt("4"),
       InvalidAmount: BigInt("5"),
       InvalidStreamPeriod: BigInt("6"),
@@ -185,6 +206,14 @@ class Factory extends ContractFactory<
     ): Promise<TestContractResultWithoutMaps<null>> => {
       return testMethod(this, "withdrawStream", params, getContractByCodeHash);
     },
+    transferStream: async (
+      params: TestContractParamsWithoutMaps<
+        StreamFactoryTypes.Fields,
+        { streamId: bigint; newRecipient: Address }
+      >
+    ): Promise<TestContractResultWithoutMaps<null>> => {
+      return testMethod(this, "transferStream", params, getContractByCodeHash);
+    },
     cancelStream: async (
       params: TestContractParamsWithoutMaps<
         StreamFactoryTypes.Fields,
@@ -201,7 +230,7 @@ export const StreamFactory = new Factory(
   Contract.fromJson(
     StreamFactoryContractJson,
     "",
-    "18014dae64f624eaa4d284745b1bc9e6dfbbf4943e8d4970ce1ad3dcf76d3c22",
+    "8878919bbce28416d2a841e6df886bdac4cbe79f4f55027743cbc1a2bc26542e",
     AllStructs
   )
 );
@@ -259,11 +288,25 @@ export class StreamFactoryInstance extends ContractInstance {
     );
   }
 
+  subscribeStreamTransferredEvent(
+    options: EventSubscribeOptions<StreamFactoryTypes.StreamTransferredEvent>,
+    fromCount?: number
+  ): EventSubscription {
+    return subscribeContractEvent(
+      StreamFactory.contract,
+      this,
+      options,
+      "StreamTransferred",
+      fromCount
+    );
+  }
+
   subscribeAllEvents(
     options: EventSubscribeOptions<
       | StreamFactoryTypes.StreamCreatedEvent
       | StreamFactoryTypes.StreamWithdrawnEvent
       | StreamFactoryTypes.StreamCanceledEvent
+      | StreamFactoryTypes.StreamTransferredEvent
     >,
     fromCount?: number
   ): EventSubscription {
@@ -298,6 +341,17 @@ export class StreamFactoryInstance extends ContractInstance {
         getContractByCodeHash
       );
     },
+    transferStream: async (
+      params: StreamFactoryTypes.CallMethodParams<"transferStream">
+    ): Promise<StreamFactoryTypes.CallMethodResult<"transferStream">> => {
+      return callMethod(
+        StreamFactory,
+        this,
+        "transferStream",
+        params,
+        getContractByCodeHash
+      );
+    },
     cancelStream: async (
       params: StreamFactoryTypes.CallMethodParams<"cancelStream">
     ): Promise<StreamFactoryTypes.CallMethodResult<"cancelStream">> => {
@@ -323,6 +377,13 @@ export class StreamFactoryInstance extends ContractInstance {
       StreamFactoryTypes.SignExecuteMethodResult<"withdrawStream">
     > => {
       return signExecuteMethod(StreamFactory, this, "withdrawStream", params);
+    },
+    transferStream: async (
+      params: StreamFactoryTypes.SignExecuteMethodParams<"transferStream">
+    ): Promise<
+      StreamFactoryTypes.SignExecuteMethodResult<"transferStream">
+    > => {
+      return signExecuteMethod(StreamFactory, this, "transferStream", params);
     },
     cancelStream: async (
       params: StreamFactoryTypes.SignExecuteMethodParams<"cancelStream">

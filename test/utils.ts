@@ -10,6 +10,7 @@ export const defaultStreamFields = {
     kind: 0n,
 
     isCancelable: false,
+    isTransferable: false,
 
     startTimestamp: 0n,
     endTimestamp: 0n,
