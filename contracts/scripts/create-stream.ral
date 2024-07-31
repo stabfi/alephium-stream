@@ -4,6 +4,7 @@ TxScript CreateLinearStream(
     amount: U256,
     recipient: Address,
     isCancelable: Bool,
+    isTransferable: Bool,
     startTimestamp: U256,
     endTimestamp: U256
 ) {
@@ -16,6 +17,7 @@ TxScript CreateLinearStream(
             kind: 0,
 
             isCancelable: isCancelable,
+            isTransferable: isTransferable,
 
             startTimestamp: startTimestamp,
             endTimestamp: endTimestamp,
@@ -34,6 +36,7 @@ TxScript CreateIntervalStream(
     amount: U256,
     recipient: Address,
     isCancelable: Bool,
+    isTransferable: Bool,
     startTimestamp: U256,
     unlockInterval: U256,
     unlockPercentage: U256
@@ -47,6 +50,7 @@ TxScript CreateIntervalStream(
             kind: 1,
 
             isCancelable: isCancelable,
+            isTransferable: isTransferable,
 
             startTimestamp: startTimestamp,
             endTimestamp: 0,
@@ -65,6 +69,7 @@ TxScript CreateCustomStream(
     amount: U256,
     recipient: Address,
     isCancelable: Bool,
+    isTransferable: Bool,
     startTimestamp: U256,
     unlockSteps: ByteVec
 ) {
@@ -77,6 +82,7 @@ TxScript CreateCustomStream(
             kind: 2,
 
             isCancelable: isCancelable,
+            isTransferable: isTransferable,
 
             startTimestamp: startTimestamp,
             endTimestamp: 0,

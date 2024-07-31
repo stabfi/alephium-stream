@@ -2,6 +2,10 @@ TxScript WithdrawStream(factory: StreamFactory, id: U256, amount: U256) {
     factory.withdrawStream(id, amount)
 }
 
+TxScript TransferStream(factory: StreamFactory, id: U256, newRecipient: Address) {
+    factory.transferStream(id, newRecipient)
+}
+
 TxScript CancelStream(factory: StreamFactory, id: U256) {
     factory.cancelStream(id)
 }
