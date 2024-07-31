@@ -8,12 +8,15 @@ Contract StreamFactory(
     event StreamWithdrawn(streamId: U256, recipient: Address, tokenId: ByteVec, amount: U256)
     // Event triggered when a stream is canceled
     event StreamCanceled(streamId: U256, creator: Address, tokenId: ByteVec, amount: U256)
+    // Event triggered when a stream is transferred
+    event StreamTransferred(streamId: U256, recipient: Address)
 
     // Enumeration of possible errors in StreamFactory
     enum StreamFactoryError {
         NotAuthorized = 0 // Caller is not authorized
         NotAvailable = 1 // Stream is not available for withdrawal
         NotCancelable = 2 // Stream is not cancelable
+        NotTransferable = 3 // Stream is not transferable
         EmptyStream = 4 // Stream has no locked amount
         InvalidAmount = 5 // Provided amount is invalid
         InvalidStreamPeriod = 6 // Stream period is invalid
@@ -146,6 +149,25 @@ Contract StreamFactory(
 
         // Emit event for stream withdrawal
         emit StreamWithdrawn(streamId, recipient, tokenId, unlockedAmount)
+    }
+
+    pub fn transferStream(streamId: U256, newRecipient: Address) -> () {
+        // Get the sub-contract ID of the stream
+        let path = toByteVec!(streamId)
+        let contractId = subContractId!(path)
+
+        // Retrieve stream details and ensure the caller is the creator
+        let (_, recipient, _, config) = Stream(contractId).getStreamDetails()
+        checkCaller!(callerAddress!() == recipient, StreamFactoryError.NotAuthorized)
+
+        // Ensure the stream is transferable
+        assert!(config.isTransferable, StreamFactoryError.NotTransferable)
+
+        // Transfer the stream
+        Stream(contractId).transferStream(newRecipient)
+
+        // Emit event for stream transfer
+        emit StreamTransferred(streamId, newRecipient)
     }
 
     @using(assetsInContract = true)
