@@ -25,6 +25,9 @@ import {
   getContractEventsCurrentCount,
   TestContractParamsWithoutMaps,
   TestContractResultWithoutMaps,
+  SignExecuteContractMethodParams,
+  SignExecuteScriptTxResult,
+  signExecuteMethod,
   addStdIdToFields,
   encodeContractFields,
 } from "@alephium/web3";
@@ -59,6 +62,14 @@ export namespace StreamTypes {
       params: Omit<CallContractParams<{}>, "args">;
       result: CallContractResult<bigint>;
     };
+    addWithdrawnAmount: {
+      params: CallContractParams<{ value: bigint }>;
+      result: CallContractResult<null>;
+    };
+    destroyStream: {
+      params: Omit<CallContractParams<{}>, "args">;
+      result: CallContractResult<null>;
+    };
   }
   export type CallMethodParams<T extends keyof CallMethodTable> =
     CallMethodTable[T]["params"];
@@ -72,6 +83,33 @@ export namespace StreamTypes {
       ? CallMethodTable[MaybeName]["result"]
       : undefined;
   };
+
+  export interface SignExecuteMethodTable {
+    getStreamDetails: {
+      params: Omit<SignExecuteContractMethodParams<{}>, "args">;
+      result: SignExecuteScriptTxResult;
+    };
+    getLockedAmount: {
+      params: Omit<SignExecuteContractMethodParams<{}>, "args">;
+      result: SignExecuteScriptTxResult;
+    };
+    getAvailableAmount: {
+      params: Omit<SignExecuteContractMethodParams<{}>, "args">;
+      result: SignExecuteScriptTxResult;
+    };
+    addWithdrawnAmount: {
+      params: SignExecuteContractMethodParams<{ value: bigint }>;
+      result: SignExecuteScriptTxResult;
+    };
+    destroyStream: {
+      params: Omit<SignExecuteContractMethodParams<{}>, "args">;
+      result: SignExecuteScriptTxResult;
+    };
+  }
+  export type SignExecuteMethodParams<T extends keyof SignExecuteMethodTable> =
+    SignExecuteMethodTable[T]["params"];
+  export type SignExecuteMethodResult<T extends keyof SignExecuteMethodTable> =
+    SignExecuteMethodTable[T]["result"];
 }
 
 class Factory extends ContractFactory<StreamInstance, StreamTypes.Fields> {
@@ -87,7 +125,9 @@ class Factory extends ContractFactory<StreamInstance, StreamTypes.Fields> {
     return this.contract.getInitialFieldsWithDefaultValues() as StreamTypes.Fields;
   }
 
-  consts = { StreamError: { NotAuthorized: BigInt(0) } };
+  consts = {
+    StreamError: { UnknownKind: BigInt("0"), NotAuthorized: BigInt("1") },
+  };
 
   at(address: string): StreamInstance {
     return new StreamInstance(address);
@@ -159,7 +199,7 @@ export const Stream = new Factory(
   Contract.fromJson(
     StreamContractJson,
     "",
-    "7d7e88b23ee716f5756632b93c213c231aa256ba981d999d4d3398421b5e055c",
+    "5d6dd75c9fa913cc5e140be6774174b0acbbedafa532ef1ad33eab6b42a92e62",
     AllStructs
   )
 );
@@ -174,7 +214,7 @@ export class StreamInstance extends ContractInstance {
     return fetchContractState(Stream, this);
   }
 
-  methods = {
+  view = {
     getStreamDetails: async (
       params?: StreamTypes.CallMethodParams<"getStreamDetails">
     ): Promise<StreamTypes.CallMethodResult<"getStreamDetails">> => {
@@ -207,6 +247,56 @@ export class StreamInstance extends ContractInstance {
         params === undefined ? {} : params,
         getContractByCodeHash
       );
+    },
+    addWithdrawnAmount: async (
+      params: StreamTypes.CallMethodParams<"addWithdrawnAmount">
+    ): Promise<StreamTypes.CallMethodResult<"addWithdrawnAmount">> => {
+      return callMethod(
+        Stream,
+        this,
+        "addWithdrawnAmount",
+        params,
+        getContractByCodeHash
+      );
+    },
+    destroyStream: async (
+      params?: StreamTypes.CallMethodParams<"destroyStream">
+    ): Promise<StreamTypes.CallMethodResult<"destroyStream">> => {
+      return callMethod(
+        Stream,
+        this,
+        "destroyStream",
+        params === undefined ? {} : params,
+        getContractByCodeHash
+      );
+    },
+  };
+
+  transact = {
+    getStreamDetails: async (
+      params: StreamTypes.SignExecuteMethodParams<"getStreamDetails">
+    ): Promise<StreamTypes.SignExecuteMethodResult<"getStreamDetails">> => {
+      return signExecuteMethod(Stream, this, "getStreamDetails", params);
+    },
+    getLockedAmount: async (
+      params: StreamTypes.SignExecuteMethodParams<"getLockedAmount">
+    ): Promise<StreamTypes.SignExecuteMethodResult<"getLockedAmount">> => {
+      return signExecuteMethod(Stream, this, "getLockedAmount", params);
+    },
+    getAvailableAmount: async (
+      params: StreamTypes.SignExecuteMethodParams<"getAvailableAmount">
+    ): Promise<StreamTypes.SignExecuteMethodResult<"getAvailableAmount">> => {
+      return signExecuteMethod(Stream, this, "getAvailableAmount", params);
+    },
+    addWithdrawnAmount: async (
+      params: StreamTypes.SignExecuteMethodParams<"addWithdrawnAmount">
+    ): Promise<StreamTypes.SignExecuteMethodResult<"addWithdrawnAmount">> => {
+      return signExecuteMethod(Stream, this, "addWithdrawnAmount", params);
+    },
+    destroyStream: async (
+      params: StreamTypes.SignExecuteMethodParams<"destroyStream">
+    ): Promise<StreamTypes.SignExecuteMethodResult<"destroyStream">> => {
+      return signExecuteMethod(Stream, this, "destroyStream", params);
     },
   };
 

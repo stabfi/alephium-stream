@@ -1,7 +1,7 @@
 {
-  "version": "v3.1.2",
+  "version": "v3.4.1",
   "name": "CreateCustomStream",
-  "bytecodeTemplate": "01010300000015b47ad1a2{1}{2}a3b4cd{2}{3}04{4}{5}0c{6}{7}130a0c{0}0100",
+  "bytecodeTemplate": "01010300000016b47ad1a2{1}{2}a3b4cd{2}{3}0e{4}{5}0c0c0c{6}130b0c{0}0100",
   "fieldsSig": {
     "names": [
       "factory",
@@ -10,8 +10,7 @@
       "recipient",
       "isCancelable",
       "startTimestamp",
-      "unlockInterval",
-      "unlockPercentage"
+      "unlockSteps"
     ],
     "types": [
       "StreamFactory",
@@ -20,11 +19,9 @@
       "Address",
       "Bool",
       "U256",
-      "U256",
-      "U256"
+      "ByteVec"
     ],
     "isMutable": [
-      false,
       false,
       false,
       false,
