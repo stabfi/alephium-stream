@@ -3,6 +3,7 @@ struct StreamConfig {
     kind: U256, // 0 - Linear, 1 - Interval, 2 - Custom
 
     isCancelable: Bool, // Indicates if the stream is cancelable
+    isTransferable: Bool, // Indicates if the stream is transferable
     startTimestamp: U256, // Start timestamo of the stream
 
     // Linear stream settings
@@ -19,7 +20,7 @@ struct StreamConfig {
 Contract Stream(
     factoryContractId: ByteVec, // ID of the factory contract
     creator: Address, // Address of the stream creator
-    recipient: Address, // Address of the stream recipient
+    mut recipient: Address, // Address of the stream recipient
     tokenId: ByteVec, // Token ID to be streamed
     amount: U256, // Total amount to be streamed
     config: StreamConfig, // Configuration of the stream
@@ -121,6 +122,14 @@ Contract Stream(
 
         // Update the withdrawn amount
         withdrawnAmount = withdrawnAmount + value
+    }
+
+    @using(updateFields = true)
+    pub fn transferStream(address: Address) -> () {
+        // Ensure the caller is the factory contract
+        checkCaller!(callerContractId!() == factoryContractId, StreamError.NotAuthorized)
+
+        recipient = address
     }
 
     @using(assetsInContract = true)
