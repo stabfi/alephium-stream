@@ -8,6 +8,7 @@ export const AllStructs = allStructsJson.map((json) => Struct.fromJson(json));
 export interface StreamConfig extends Record<string, Val> {
   kind: bigint;
   isCancelable: boolean;
+  isTransferable: boolean;
   startTimestamp: bigint;
   endTimestamp: bigint;
   unlockInterval: bigint;

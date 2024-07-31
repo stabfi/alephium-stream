@@ -4,6 +4,7 @@
     "fieldNames": [
       "kind",
       "isCancelable",
+      "isTransferable",
       "startTimestamp",
       "endTimestamp",
       "unlockInterval",
@@ -13,6 +14,7 @@
     "fieldTypes": [
       "U256",
       "Bool",
+      "Bool",
       "U256",
       "U256",
       "U256",
@@ -20,6 +22,7 @@
       "ByteVec"
     ],
     "isMutable": [
+      false,
       false,
       false,
       false,

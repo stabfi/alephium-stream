@@ -66,6 +66,10 @@ export namespace StreamTypes {
       params: CallContractParams<{ value: bigint }>;
       result: CallContractResult<null>;
     };
+    transferStream: {
+      params: CallContractParams<{ address: Address }>;
+      result: CallContractResult<null>;
+    };
     destroyStream: {
       params: Omit<CallContractParams<{}>, "args">;
       result: CallContractResult<null>;
@@ -99,6 +103,10 @@ export namespace StreamTypes {
     };
     addWithdrawnAmount: {
       params: SignExecuteContractMethodParams<{ value: bigint }>;
+      result: SignExecuteScriptTxResult;
+    };
+    transferStream: {
+      params: SignExecuteContractMethodParams<{ address: Address }>;
       result: SignExecuteScriptTxResult;
     };
     destroyStream: {
@@ -183,6 +191,14 @@ class Factory extends ContractFactory<StreamInstance, StreamTypes.Fields> {
         getContractByCodeHash
       );
     },
+    transferStream: async (
+      params: TestContractParamsWithoutMaps<
+        StreamTypes.Fields,
+        { address: Address }
+      >
+    ): Promise<TestContractResultWithoutMaps<null>> => {
+      return testMethod(this, "transferStream", params, getContractByCodeHash);
+    },
     destroyStream: async (
       params: Omit<
         TestContractParamsWithoutMaps<StreamTypes.Fields, never>,
@@ -199,7 +215,7 @@ export const Stream = new Factory(
   Contract.fromJson(
     StreamContractJson,
     "",
-    "5d6dd75c9fa913cc5e140be6774174b0acbbedafa532ef1ad33eab6b42a92e62",
+    "fb927c8b00a2206a0dfb15dd912c9c759d4a1deaad08a909f5249a97413c615d",
     AllStructs
   )
 );
@@ -259,6 +275,17 @@ export class StreamInstance extends ContractInstance {
         getContractByCodeHash
       );
     },
+    transferStream: async (
+      params: StreamTypes.CallMethodParams<"transferStream">
+    ): Promise<StreamTypes.CallMethodResult<"transferStream">> => {
+      return callMethod(
+        Stream,
+        this,
+        "transferStream",
+        params,
+        getContractByCodeHash
+      );
+    },
     destroyStream: async (
       params?: StreamTypes.CallMethodParams<"destroyStream">
     ): Promise<StreamTypes.CallMethodResult<"destroyStream">> => {
@@ -292,6 +319,11 @@ export class StreamInstance extends ContractInstance {
       params: StreamTypes.SignExecuteMethodParams<"addWithdrawnAmount">
     ): Promise<StreamTypes.SignExecuteMethodResult<"addWithdrawnAmount">> => {
       return signExecuteMethod(Stream, this, "addWithdrawnAmount", params);
+    },
+    transferStream: async (
+      params: StreamTypes.SignExecuteMethodParams<"transferStream">
+    ): Promise<StreamTypes.SignExecuteMethodResult<"transferStream">> => {
+      return signExecuteMethod(Stream, this, "transferStream", params);
     },
     destroyStream: async (
       params: StreamTypes.SignExecuteMethodParams<"destroyStream">

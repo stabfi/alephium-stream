@@ -1,17 +1,20 @@
 {
   "version": "v3.4.1",
-  "name": "CancelStream",
-  "bytecodeTemplate": "01010300000005{1}0d0c{0}0103",
+  "name": "TransferStream",
+  "bytecodeTemplate": "01010300000006{1}{2}0e0c{0}0102",
   "fieldsSig": {
     "names": [
       "factory",
-      "id"
+      "id",
+      "newRecipient"
     ],
     "types": [
       "StreamFactory",
-      "U256"
+      "U256",
+      "Address"
     ],
     "isMutable": [
+      false,
       false,
       false
     ]
