@@ -1,5 +1,6 @@
 import { Stream } from '../artifacts/ts'
-import { defaultStreamFields, setupNodeProvider } from './utils'
+import { defaultStreamFields } from './utils/consts'
+import { setupNodeProvider } from './utils/helpers'
 
 setupNodeProvider()
 
