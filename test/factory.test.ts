@@ -320,34 +320,34 @@ describe('StreamFactory e2e tests', () => {
         })
       })
 
-      // it('should fail if custom unlock steps data is invalid (passed amount != stream amount)', async () => {
-      //   const instance = getDevnetContract(deployments, 'StreamFactory')
-      //   const account = await setAccount('main', instance.groupIndex)
+      it('should fail if custom unlock steps data is invalid (passed amount != stream amount)', async () => {
+        const instance = getDevnetContract(deployments, 'StreamFactory')
+        const account = await setAccount('main', instance.groupIndex)
 
-      //   let unlockSteps = ''
-      //   unlockSteps += 1n.toString(16).padStart(64, '0')
-      //   unlockSteps += 50n.toString(16).padStart(64, '0')
+        let unlockSteps = ''
+        unlockSteps += 1n.toString(16).padStart(64, '0')
+        unlockSteps += 50n.toString(16).padStart(64, '0')
 
-      //   await StreamFactoryWrapper({
-      //     instance,
-      //     method: 'createStream',
-      //     contractDeposit: true,
-      //     params: {
-      //       caller: account.address,
-      //       tokenId,
-      //       amount: ONE_ALPH,
-      //       recipient: randomContractAddress(instance.groupIndex),
-      //       config: {
-      //         ...defaultStreamFields.config,
-      //         kind: 2n,
-      //         unlockSteps,
-      //       },
-      //     },
-      //     tokenId,
-      //     tokenAmount: ONE_ALPH,
-      //     expected: Fail(StreamFactoryErrors.InvalidAmount),
-      //   })
-      // })
+        await StreamFactoryWrapper({
+          instance,
+          method: 'createStream',
+          contractDeposit: true,
+          params: {
+            caller: account.address,
+            tokenId,
+            amount: ONE_ALPH,
+            recipient: randomContractAddress(instance.groupIndex),
+            config: {
+              ...defaultStreamFields.config,
+              kind: 2n,
+              unlockSteps,
+            },
+          },
+          tokenId,
+          tokenAmount: ONE_ALPH,
+          expected: Fail(StreamFactoryErrors.InvalidAmount),
+        })
+      })
 
       it('should fail if custom unlock steps data is invalid (timestamp less than previous)', async () => {
         const instance = getDevnetContract(deployments, 'StreamFactory')
