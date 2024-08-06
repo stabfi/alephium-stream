@@ -1,0 +1,31 @@
+Contract Vault(
+    factoryContractId: ByteVec,
+    tokenId: ByteVec
+) {
+    // Enumeration of possible errors in Vault
+    enum VaultError {
+        NotAuthorized = 0 // Caller is not authorized
+    }
+
+    @using(preapprovedAssets = true, payToContractOnly = true)
+    pub fn depositAsset(depositor: Address, amount: U256) -> () {
+        // Ensure the caller is the factory contract
+        checkCaller!(callerContractId!() == factoryContractId, VaultError.NotAuthorized)
+
+        // Transfer the specified amount of the token from the depositor to the contract
+        transferTokenToSelf!(depositor, tokenId, amount)
+    }
+
+    @using(preapprovedAssets = true, assetsInContract = true)
+    pub fn transferAsset(caller: Address, target: Address, amount: U256) -> () {
+        // Ensure the caller is the factory contract
+        checkCaller!(callerContractId!() == factoryContractId, VaultError.NotAuthorized)
+
+        // Deduct and return 0.001 ALPH to comply with the minimum UTXO amount restriction
+        transferTokenToSelf!(caller, ALPH, dustAmount!())
+        transferTokenFromSelf!(target, ALPH, dustAmount!())
+
+        // Transfer the specified amount of the token from the contract to the target address
+        transferTokenFromSelf!(target, tokenId, amount)
+    }
+}
