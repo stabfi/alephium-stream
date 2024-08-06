@@ -1,7 +1,7 @@
 {
-  "version": "v3.4.1",
+  "version": "v3.5.0",
   "name": "TransferStream",
-  "bytecodeTemplate": "01010300000006{1}{2}0e0c{0}0102",
+  "bytecodeTemplate": "01010300000009b40ca2{1}{2}0e0c{0}0103",
   "fieldsSig": {
     "names": [
       "factory",

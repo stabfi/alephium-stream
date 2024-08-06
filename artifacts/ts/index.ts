@@ -4,4 +4,5 @@
 
 export * from "./Stream";
 export * from "./StreamFactory";
+export * from "./Vault";
 export * from "./scripts";

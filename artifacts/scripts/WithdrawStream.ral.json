@@ -1,7 +1,7 @@
 {
-  "version": "v3.4.1",
+  "version": "v3.5.0",
   "name": "WithdrawStream",
-  "bytecodeTemplate": "01010300000006{1}{2}0e0c{0}0101",
+  "bytecodeTemplate": "01010300000009b413c3038d7ea4c68000a2{1}{2}0e0c{0}0102",
   "fieldsSig": {
     "names": [
       "factory",

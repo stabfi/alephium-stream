@@ -1,0 +1,73 @@
+{
+  "version": "v3.5.0",
+  "name": "Vault",
+  "bytecode": "020218404801070202000ad3bf71cb0eb3ce00410c7b1600ce011601ac010103030010d30a1a134db3ce00410c7b160013c3038d7ea4c68000a9160113c3038d7ea4c68000a81601ce011602ab",
+  "codeHash": "5824aa69782578c6168500ed8fa072351cb7da0cbef65a92e331e94985decf5b",
+  "fieldsSig": {
+    "names": [
+      "factoryContractId",
+      "tokenId"
+    ],
+    "types": [
+      "ByteVec",
+      "ByteVec"
+    ],
+    "isMutable": [
+      false,
+      false
+    ]
+  },
+  "eventsSig": [],
+  "functions": [
+    {
+      "name": "depositAsset",
+      "paramNames": [
+        "depositor",
+        "amount"
+      ],
+      "paramTypes": [
+        "Address",
+        "U256"
+      ],
+      "paramIsMutable": [
+        false,
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "transferAsset",
+      "paramNames": [
+        "caller",
+        "target",
+        "amount"
+      ],
+      "paramTypes": [
+        "Address",
+        "Address",
+        "U256"
+      ],
+      "paramIsMutable": [
+        false,
+        false,
+        false
+      ],
+      "returnTypes": []
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "VaultError",
+      "fields": [
+        {
+          "name": "NotAuthorized",
+          "value": {
+            "type": "U256",
+            "value": "0"
+          }
+        }
+      ]
+    }
+  ]
+}
