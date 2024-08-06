@@ -1,11 +1,11 @@
 TxScript WithdrawStream(factory: StreamFactory, id: U256, amount: U256) {
-    factory.withdrawStream(id, amount)
+    factory.withdrawStream{callerAddress!() -> ALPH: dustAmount!()}(id, amount)
 }
 
 TxScript TransferStream(factory: StreamFactory, id: U256, newRecipient: Address) {
-    factory.transferStream(id, newRecipient)
+    factory.transferStream{callerAddress!() -> ALPH: 0}(id, newRecipient)
 }
 
 TxScript CancelStream(factory: StreamFactory, id: U256) {
-    factory.cancelStream(id)
+    factory.cancelStream{callerAddress!() -> ALPH: dustAmount!()}(id)
 }
