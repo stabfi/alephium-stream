@@ -100,6 +100,7 @@ Contract StreamFactory(
             let stepsCount = size!(config.unlockSteps) / 64
             let mut offset = 0
             let mut lastTimestamp = 0
+            let mut totalAmount = 0
 
             // Loop through each unlock step
             while (offset < stepsCount) {
@@ -115,8 +116,12 @@ Contract StreamFactory(
                 assert!(stepAmount > 0, StreamFactoryError.InvalidAmount)
 
                 lastTimestamp = stepTimestamp
+                totalAmount = totalAmount + stepAmount
                 offset = offset + 1
             }
+
+            // Validate the total unlock steps amount
+            assert!(amount == totalAmount, StreamFactoryError.InvalidAmount)
         }
 
         if (config.kind >= 3) {
