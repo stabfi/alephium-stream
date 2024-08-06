@@ -30,10 +30,12 @@ export const setAccount = async (name: string, group: number): Promise<HDWalletA
     const main = ACCOUNTS_CACHE.get(`main-${group}`)!
     await wallet.signAndSubmitTransferTx({
       signerAddress: main?.address,
-      destinations: [{
-        address: account.address,
-        attoAlphAmount: DUST_AMOUNT + ONE_ALPH * 1_000n,
-      }]
+      destinations: [
+        {
+          address: account.address,
+          attoAlphAmount: DUST_AMOUNT + ONE_ALPH * 1_000n,
+        },
+      ],
     })
   }
 
