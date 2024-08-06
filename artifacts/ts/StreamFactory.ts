@@ -39,6 +39,7 @@ import { StreamConfig, AllStructs } from "./types";
 export namespace StreamFactoryTypes {
   export type Fields = {
     streamTemplateId: HexString;
+    vaultTemplateId: HexString;
     streamCounter: bigint;
   };
 
@@ -68,6 +69,10 @@ export namespace StreamFactoryTypes {
   }>;
 
   export interface CallMethodTable {
+    createVault: {
+      params: CallContractParams<{ tokenId: HexString }>;
+      result: CallContractResult<HexString>;
+    };
     createStream: {
       params: CallContractParams<{
         caller: Address;
@@ -105,6 +110,10 @@ export namespace StreamFactoryTypes {
   };
 
   export interface SignExecuteMethodTable {
+    createVault: {
+      params: SignExecuteContractMethodParams<{ tokenId: HexString }>;
+      result: SignExecuteScriptTxResult;
+    };
     createStream: {
       params: SignExecuteContractMethodParams<{
         caller: Address;
@@ -168,14 +177,15 @@ class Factory extends ContractFactory<
       NotAvailable: BigInt("1"),
       NotCancelable: BigInt("2"),
       NotTransferable: BigInt("3"),
-      EmptyStream: BigInt("4"),
-      InvalidAmount: BigInt("5"),
-      InvalidStreamPeriod: BigInt("6"),
-      InvalidUnlockInterval: BigInt("7"),
-      InvalidUnlockPercentage: BigInt("8"),
-      InvalidUnlockStepsLength: BigInt("9"),
-      InvalidUnlockStepsOrder: BigInt("10"),
-      InvalidWithdrawAmount: BigInt("11"),
+      InvalidAmount: BigInt("4"),
+      InvalidStreamPeriod: BigInt("5"),
+      InvalidUnlockInterval: BigInt("6"),
+      InvalidUnlockPercentage: BigInt("7"),
+      InvalidUnlockStepsLength: BigInt("8"),
+      InvalidUnlockStepsOrder: BigInt("9"),
+      InvalidWithdrawAmount: BigInt("10"),
+      VaultAlreadyExists: BigInt("11"),
+      VaultDoesNotExist: BigInt("12"),
     },
   };
 
@@ -184,6 +194,14 @@ class Factory extends ContractFactory<
   }
 
   tests = {
+    createVault: async (
+      params: TestContractParamsWithoutMaps<
+        StreamFactoryTypes.Fields,
+        { tokenId: HexString }
+      >
+    ): Promise<TestContractResultWithoutMaps<HexString>> => {
+      return testMethod(this, "createVault", params, getContractByCodeHash);
+    },
     createStream: async (
       params: TestContractParamsWithoutMaps<
         StreamFactoryTypes.Fields,
@@ -229,8 +247,8 @@ class Factory extends ContractFactory<
 export const StreamFactory = new Factory(
   Contract.fromJson(
     StreamFactoryContractJson,
-    "",
-    "8878919bbce28416d2a841e6df886bdac4cbe79f4f55027743cbc1a2bc26542e",
+    "=10-2+8f=2-2+32=2-2+7b=2-2+fc=135-1+7=562+a00016187e030a53747265616d204964200f202d20436f6e74726163742049642000=762",
+    "28b434f6d8068a313b3d2c479de9e06280b789f30e3af7dd22c62791763d6219",
     AllStructs
   )
 );
@@ -319,6 +337,17 @@ export class StreamFactoryInstance extends ContractInstance {
   }
 
   view = {
+    createVault: async (
+      params: StreamFactoryTypes.CallMethodParams<"createVault">
+    ): Promise<StreamFactoryTypes.CallMethodResult<"createVault">> => {
+      return callMethod(
+        StreamFactory,
+        this,
+        "createVault",
+        params,
+        getContractByCodeHash
+      );
+    },
     createStream: async (
       params: StreamFactoryTypes.CallMethodParams<"createStream">
     ): Promise<StreamFactoryTypes.CallMethodResult<"createStream">> => {
@@ -366,6 +395,11 @@ export class StreamFactoryInstance extends ContractInstance {
   };
 
   transact = {
+    createVault: async (
+      params: StreamFactoryTypes.SignExecuteMethodParams<"createVault">
+    ): Promise<StreamFactoryTypes.SignExecuteMethodResult<"createVault">> => {
+      return signExecuteMethod(StreamFactory, this, "createVault", params);
+    },
     createStream: async (
       params: StreamFactoryTypes.SignExecuteMethodParams<"createStream">
     ): Promise<StreamFactoryTypes.SignExecuteMethodResult<"createStream">> => {
@@ -391,4 +425,15 @@ export class StreamFactoryInstance extends ContractInstance {
       return signExecuteMethod(StreamFactory, this, "cancelStream", params);
     },
   };
+
+  async multicall<Calls extends StreamFactoryTypes.MultiCallParams>(
+    calls: Calls
+  ): Promise<StreamFactoryTypes.MultiCallResults<Calls>> {
+    return (await multicallMethods(
+      StreamFactory,
+      this,
+      calls,
+      getContractByCodeHash
+    )) as StreamFactoryTypes.MultiCallResults<Calls>;
+  }
 }

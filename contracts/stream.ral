@@ -129,6 +129,7 @@ Contract Stream(
         // Ensure the caller is the factory contract
         checkCaller!(callerContractId!() == factoryContractId, StreamError.NotAuthorized)
 
+        // Update the recipient
         recipient = address
     }
 

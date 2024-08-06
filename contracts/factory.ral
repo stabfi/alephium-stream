@@ -1,5 +1,6 @@
 Contract StreamFactory(
-    streamTemplateId: ByteVec, // Contract ID of the Stream contract
+    streamTemplateId: ByteVec, // Contract ID of the Stream contract template
+    vaultTemplateId: ByteVec, // Contract ID of the Vault contract template
     mut streamCounter: U256 // Counter to keep track of stream instances
 ) {
     // Event triggered when a new stream is created
@@ -17,17 +18,44 @@ Contract StreamFactory(
         NotAvailable = 1 // Stream is not available for withdrawal
         NotCancelable = 2 // Stream is not cancelable
         NotTransferable = 3 // Stream is not transferable
-        EmptyStream = 4 // Stream has no locked amount
-        InvalidAmount = 5 // Provided amount is invalid
-        InvalidStreamPeriod = 6 // Stream period is invalid
-        InvalidUnlockInterval = 7 // Unlock interval is invalid
-        InvalidUnlockPercentage = 8 // Unlock percentage is invalid
-        InvalidUnlockStepsLength = 9 // Unlock steps length is invalid
-        InvalidUnlockStepsOrder = 10 // Unlock steps order is invalid
-        InvalidWithdrawAmount = 11 // Withdraw amount is invalid
+        InvalidAmount = 4 // Provided amount is invalid
+        InvalidStreamPeriod = 5 // Stream period is invalid
+        InvalidUnlockInterval = 6 // Unlock interval is invalid
+        InvalidUnlockPercentage = 7 // Unlock percentage is invalid
+        InvalidUnlockStepsLength = 8 // Unlock steps length is invalid
+        InvalidUnlockStepsOrder = 9 // Unlock steps order is invalid
+        InvalidWithdrawAmount = 10 // Withdraw amount is invalid
+        VaultAlreadyExists = 11 // Vault already exists
+        VaultDoesNotExist = 12 // Vault does not exists
     }
 
-    @using(preapprovedAssets = true, payToContractOnly = true, checkExternalCaller = false, updateFields = true)
+    @using(preapprovedAssets = true, checkExternalCaller = false)
+    pub fn createVault(tokenId: ByteVec) -> ByteVec {
+        // Generate a unique path identifier for the vault
+        let path = b`vault` ++ tokenId
+        
+        // Derive the vault's contract ID using the unique path
+        let vaultContractId = subContractId!(path)
+    
+        // Check if a contract already exists at the derived contract ID
+        assert!(!contractExists!(vaultContractId), StreamFactoryError.VaultAlreadyExists)
+    
+        // Encode immutable and mutable fields for the vault
+        let (encodedImmutableFields, encodedMutableFields) = Vault.encodeFields!(
+            selfContractId!(), 
+            tokenId
+        )
+    
+        // Create a new sub-contract for the vault
+        return copyCreateSubContract!{callerAddress!() -> ALPH: minimalContractDeposit!()}(
+            path,
+            vaultTemplateId,
+            encodedImmutableFields,
+            encodedMutableFields
+        )
+    }
+
+    @using(preapprovedAssets = true, checkExternalCaller = false, updateFields = true)
     pub fn createStream(
         caller: Address, // Address of the stream creator
         tokenId: ByteVec, // Token ID to be streamed
@@ -35,12 +63,21 @@ Contract StreamFactory(
         recipient: Address, // Address of the stream recipient
         config: StreamConfig // Stream configuration
     ) -> () {
-        // Transfer tokens from caller to contract
-        transferTokenToSelf!(caller, tokenId, amount)
+        // Get a unique path identifier for the vault
+        let vaultPath = b`vault` ++ tokenId
+
+        // Derive the vault's contract ID using the unique path
+        let vaultContractId = subContractId!(vaultPath)
 
         // Ensure the amount is greater than zero
         assert!(amount > 0, StreamFactoryError.InvalidAmount)
 
+        // Check if a contract exists at the specified vault contract ID
+        assert!(contractExists!(vaultContractId), StreamFactoryError.VaultDoesNotExist)
+
+        // Call the depositAsset function on the Vault contract with the identified contract ID
+        Vault(vaultContractId).depositAsset{caller -> tokenId: amount}(caller, amount)
+        
         // Validate stream configuration
         if (config.kind == 0) {
             assert!(config.endTimestamp > config.startTimestamp, StreamFactoryError.InvalidStreamPeriod)
@@ -107,6 +144,8 @@ Contract StreamFactory(
             encodedImmutableFields,
             encodedMutableFields
         )
+        
+        emit Debug(`Stream Id ${streamCounter} - Contract Id ${contractId}`)
 
         // Emit event for stream creation
         emit StreamCreated(streamCounter, caller, recipient, contractId)
@@ -115,15 +154,17 @@ Contract StreamFactory(
         streamCounter = streamCounter + 1
     }
 
-    @using(assetsInContract = true)
+    @using(preapprovedAssets = true)
     pub fn withdrawStream(streamId: U256, amount: U256) -> () {
+        let caller = callerAddress!()
+
         // Get the sub-contract ID of the stream
         let path = toByteVec!(streamId)
         let contractId = subContractId!(path)
 
         // Retrieve stream details and ensure the caller is the recipient
         let (_, recipient, tokenId, _) = Stream(contractId).getStreamDetails()
-        checkCaller!(callerAddress!() == recipient, StreamFactoryError.NotAuthorized)
+        checkCaller!(caller == recipient, StreamFactoryError.NotAuthorized)
 
         // Get the available amount to unlock and ensure there is an amount to unlock
         let mut unlockedAmount = Stream(contractId).getAvailableAmount()
@@ -138,7 +179,9 @@ Contract StreamFactory(
         }
 
         // Transfer the unlocked amount to the recipient and update the withdrawn amount in the stream
-        transferTokenFromSelf!(recipient, tokenId, unlockedAmount)
+        let vaultPath = b`vault` ++ tokenId
+        let vaultContractId = subContractId!(vaultPath)
+        Vault(vaultContractId).transferAsset{caller -> ALPH: dustAmount!()}(caller, recipient, unlockedAmount)
         Stream(contractId).addWithdrawnAmount(unlockedAmount)
 
         // Get the remaining locked amount and destroy the stream sub-contract if no amount is left
@@ -151,12 +194,13 @@ Contract StreamFactory(
         emit StreamWithdrawn(streamId, recipient, tokenId, unlockedAmount)
     }
 
+    @using(preapprovedAssets = true)
     pub fn transferStream(streamId: U256, newRecipient: Address) -> () {
         // Get the sub-contract ID of the stream
         let path = toByteVec!(streamId)
         let contractId = subContractId!(path)
 
-        // Retrieve stream details and ensure the caller is the creator
+        // Retrieve stream details and ensure the caller is the recipient
         let (_, recipient, _, config) = Stream(contractId).getStreamDetails()
         checkCaller!(callerAddress!() == recipient, StreamFactoryError.NotAuthorized)
 
@@ -170,26 +214,28 @@ Contract StreamFactory(
         emit StreamTransferred(streamId, newRecipient)
     }
 
-    @using(assetsInContract = true)
+    @using(preapprovedAssets = true)
     pub fn cancelStream(streamId: U256) -> () {
+        let caller = callerAddress!()
+
         // Get the sub-contract ID of the stream
         let path = toByteVec!(streamId)
         let contractId = subContractId!(path)
 
         // Retrieve stream details and ensure the caller is the creator
         let (creator, _, tokenId, config) = Stream(contractId).getStreamDetails()
-        checkCaller!(callerAddress!() == creator, StreamFactoryError.NotAuthorized)
+        checkCaller!(caller == creator, StreamFactoryError.NotAuthorized)
 
         // Ensure the stream is cancelable
         assert!(config.isCancelable, StreamFactoryError.NotCancelable)
 
         // Get the locked amount in the stream
         let lockedAmount = Stream(contractId).getLockedAmount()
-        // Ensure there is a locked amount
-        assert!(lockedAmount > 0, StreamFactoryError.EmptyStream)
 
         // Transfer the locked amount back to the creator
-        transferTokenFromSelf!(creator, tokenId, lockedAmount)
+        let vaultPath = b`vault` ++ tokenId
+        let vaultContractId = subContractId!(vaultPath)
+        Vault(vaultContractId).transferAsset{caller -> ALPH: dustAmount!()}(caller, creator, lockedAmount)
 
         // Destroy the stream
         Stream(contractId).destroyStream()

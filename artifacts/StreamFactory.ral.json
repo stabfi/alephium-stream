@@ -1,18 +1,21 @@
 {
-  "version": "v3.4.1",
+  "version": "v3.5.0",
   "name": "StreamFactory",
-  "bytecode": "02044110418d41d6423701070c170040a3d38f33614a160016011602ac16020c33117b16040c2f4c05160816073313067b16040d2f4c1116090c3313077b160a0c3313087b134064160a2e0c2f13087b16040e2f4c4046160b430c3313097b160b431340402e0c2f13097b160b431340402d170c0c170d0c170e160d160c314c402b160d1340402c170f160d0d2a1340402c1710160b160f161013202b62711711160b160f13202a1610627117121611160e33130a7b16120c33117b1611170e160d0d2a170d4a7fd116040f344c03044d18b1160016011602160416051606160716081609160a160b130c6416030c13026417141713a0004017151600d1a21615ce0016131614c1171605a00016001603161661a0000d2aa1000102020800404cd36732457816004017021602cb17030c130b1603010018181818181818181705170418b41604450c7b0c0d16030102170616060c330d7b1601160632130b7b16010c304c0216011706160416051606ab16060d0c160301030c0d16030101170716070c2f4c040c0c16030105061600160416051606610100020d004027d3826b2c2716004017021602cb17030c130b16030100170c170b170a1709170817071706170518170418b41604450c7b16070f7b16010d0c1603010408160016015f0102010e004036d33b898cb616004017011601cb17020c130b16020100170c170b170a170917081707170617051704181703b41603450c7b16060e7b0c0d16020101170d160d0c33107b16031604160dab0c0c1602010507160016031604160d61",
-  "codeHash": "8878919bbce28416d2a841e6df886bdac4cbe79f4f55027743cbc1a2bc26542e",
+  "bytecode": "0305403d416d4210425942da01030105011ed3b1276e5614057661756c7416004417011601cb17021602c519130b7bb1160013026413006417041703b4d1a21601ce0116031604c10201030c190040b4d38f33614a14057661756c74160144170c160ccb170d16020c33107b160dc5130c7b160016011602a3160016020e0c160d010016040c2f4c051608160733117b16040d2f4c1116090c3313067b160a0c3313077b134064160a2e0c2f13077b16040e2f4c4046160b430c3313087b160b431340402e0c2f13087b160b431340402d170e0c170f0c1710160f160e314c402b160f1340402c1711160f0d2a1340402c1712160b1611161213202b62711713160b161113202a161262711714161316103313097b16140c33107b16131710160f0d2a170f4a7fd116040f344c03044d18b1160016011602160416051606160716081609160a160b130c6416030c13026417161715a0004017171600d1a21617ce0016151616c1171805a00016001603161861a0000d2aa1000103020b00405bd367324578b4170216004017031603cb17040c130b160401001818181818181818170617051816021605450c7b0c0d16040102170716070c330d7b1601160732130a7b16010c304c021601170714057661756c7416064417081608cb1709160213c3038d7ea4c68000a21602160516070f0c1609010116070d0c160401030c0d16040101170a160a0c2f4c040c0c16040105061600160516061607610103020d004027d3826b2c2716004017021602cb17030c130b16030100170c170b170a1709170817071706170518170418b41604450c7b16070f7b16010d0c1603010408160016015f01030111004040d33b898cb6b4170116004017021602cb17030c130b16030100170d170c170b170a1709170817071706170518170416011604450c7b16070e7b0c0d16030101170e14057661756c74160544170f160fcb1710160113c3038d7ea4c68000a216011604160e0f0c161001010c0c1603010507160016041605160e61",
+  "codeHash": "517e0c8cbefec199e6f2baf5b1f021a418ea84cfc063fe3ca63c8df62c18915c",
   "fieldsSig": {
     "names": [
       "streamTemplateId",
+      "vaultTemplateId",
       "streamCounter"
     ],
     "types": [
       "ByteVec",
+      "ByteVec",
       "U256"
     ],
     "isMutable": [
+      false,
       false,
       true
     ]
@@ -76,6 +79,21 @@
     }
   ],
   "functions": [
+    {
+      "name": "createVault",
+      "paramNames": [
+        "tokenId"
+      ],
+      "paramTypes": [
+        "ByteVec"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": [
+        "ByteVec"
+      ]
+    },
     {
       "name": "createStream",
       "paramNames": [
@@ -181,59 +199,66 @@
           }
         },
         {
-          "name": "EmptyStream",
+          "name": "InvalidAmount",
           "value": {
             "type": "U256",
             "value": "4"
           }
         },
         {
-          "name": "InvalidAmount",
+          "name": "InvalidStreamPeriod",
           "value": {
             "type": "U256",
             "value": "5"
           }
         },
         {
-          "name": "InvalidStreamPeriod",
+          "name": "InvalidUnlockInterval",
           "value": {
             "type": "U256",
             "value": "6"
           }
         },
         {
-          "name": "InvalidUnlockInterval",
+          "name": "InvalidUnlockPercentage",
           "value": {
             "type": "U256",
             "value": "7"
           }
         },
         {
-          "name": "InvalidUnlockPercentage",
+          "name": "InvalidUnlockStepsLength",
           "value": {
             "type": "U256",
             "value": "8"
           }
         },
         {
-          "name": "InvalidUnlockStepsLength",
+          "name": "InvalidUnlockStepsOrder",
           "value": {
             "type": "U256",
             "value": "9"
           }
         },
         {
-          "name": "InvalidUnlockStepsOrder",
+          "name": "InvalidWithdrawAmount",
           "value": {
             "type": "U256",
             "value": "10"
           }
         },
         {
-          "name": "InvalidWithdrawAmount",
+          "name": "VaultAlreadyExists",
           "value": {
             "type": "U256",
             "value": "11"
+          }
+        },
+        {
+          "name": "VaultDoesNotExist",
+          "value": {
+            "type": "U256",
+            "value": "12"
           }
         }
       ]
