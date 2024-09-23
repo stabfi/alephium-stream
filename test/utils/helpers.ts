@@ -99,10 +99,16 @@ export const createStream = async (
   return await getStreamId(streamTx.txId)
 }
 
+const d2h = (d: number) => {
+  var h = d.toString(16)
+
+  return h.length % 2 ? `0${h}` : h
+}
+
 export const getStreamInstance = (deployments: Deployments, streamId: bigint) => {
   const instance = getDevnetContract(deployments, 'StreamFactory')
 
-  return Stream.at(addressFromContractId(subContractId(instance.contractId, streamId.toString(16), instance.groupIndex)))
+  return Stream.at(addressFromContractId(subContractId(instance.contractId, d2h(Number(streamId)), instance.groupIndex)))
 }
 
 export const getTokenBalance = async (address: string, tokenId: string) => {
