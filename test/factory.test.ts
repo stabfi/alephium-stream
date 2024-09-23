@@ -73,6 +73,25 @@ describe('StreamFactory e2e tests', () => {
       })
     })
 
+    it('should fail if recipient group is invalid', async () => {
+      const instance = getDevnetContract(deployments, 'StreamFactory')
+      const account = await setAccount('main', instance.groupIndex)
+
+      await StreamFactoryWrapper({
+        instance,
+        method: 'createStream',
+        account: 'main',
+        params: {
+          caller: account.address,
+          tokenId: ALPH_TOKEN_ID,
+          amount: 0n,
+          recipient: randomContractAddress(instance.groupIndex == 0 ? 1 : 0),
+          config: defaultStreamFields.config,
+        },
+        expected: Fail(StreamFactoryErrors.InvalidRecipientGroup),
+      })
+    })
+
     it("should fail if vault doesn't exists", async () => {
       const instance = getDevnetContract(deployments, 'StreamFactory')
       const account = await setAccount('main', instance.groupIndex)
