@@ -56,6 +56,18 @@ Contract StreamFactory(
         )
     }
 
+    @using(checkExternalCaller = false)
+    pub fn hasVault(tokenId: ByteVec) -> Bool {
+        // Generate a unique path identifier for the vault
+        let path = b`vault` ++ tokenId
+        
+        // Derive the vault's contract ID using the unique path
+        let vaultContractId = subContractId!(path)
+    
+        // Check if a contract already exists at the derived contract ID
+        return contractExists!(vaultContractId)
+    }
+
     @using(preapprovedAssets = true, checkExternalCaller = false, updateFields = true)
     pub fn createStream(
         caller: Address, // Address of the stream creator
