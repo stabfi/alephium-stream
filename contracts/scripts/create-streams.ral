@@ -1,0 +1,145 @@
+TxScript CreateLinearStreams(
+    factory: StreamFactory,
+    tokenId: ByteVec,
+    isCancelable: Bool,
+    isTransferable: Bool,
+    startTimestamp: U256,
+    endTimestamp: U256,
+
+    recipients: ByteVec,
+    amounts: ByteVec
+) {
+    let recipientsCount = size!(recipients) / 33
+    let mut i = 0
+
+    while (i < recipientsCount) {
+        let recipient = byteVecToAddress!(byteVecSlice!(recipients, i * 33, (i + 1) * 33))
+        let amount = u256From32Byte!(byteVecSlice!(amounts, i * 32, (i + 1) * 32))
+
+        factory.createStream{callerAddress!() -> ALPH: minimalContractDeposit!(), tokenId: amount}(
+            callerAddress!(),
+            tokenId,
+            amount,
+            recipient,
+            StreamConfig {
+                kind: 0,
+
+                isCancelable: isCancelable,
+                isTransferable: isTransferable,
+
+                startTimestamp: startTimestamp,
+                endTimestamp: endTimestamp,
+
+                unlockInterval: 0,
+                unlockPercentage: 0,
+
+                unlockSteps: #
+            }
+        )
+
+        i = i + 1
+    }
+}
+
+TxScript CreateIntervalStreams(
+    factory: StreamFactory,
+    tokenId: ByteVec,
+    isCancelable: Bool,
+    isTransferable: Bool,
+    startTimestamp: U256,
+    unlockInterval: U256,
+    unlockPercentage: U256,
+
+    recipients: ByteVec,
+    amounts: ByteVec
+) {
+    let recipientsCount = size!(recipients) / 33
+    let mut i = 0
+
+    while (i < recipientsCount) {
+        let recipient = byteVecToAddress!(byteVecSlice!(recipients, i * 33, (i + 1) * 33))
+        let amount = u256From32Byte!(byteVecSlice!(amounts, i * 32, (i + 1) * 32))
+
+        factory.createStream{callerAddress!() -> ALPH: minimalContractDeposit!(), tokenId: amount}(
+            callerAddress!(),
+            tokenId,
+            amount,
+            recipient,
+            StreamConfig {
+                kind: 1,
+
+                isCancelable: isCancelable,
+                isTransferable: isTransferable,
+
+                startTimestamp: startTimestamp,
+                endTimestamp: 0,
+
+                unlockInterval: unlockInterval,
+                unlockPercentage: unlockPercentage,
+
+                unlockSteps: #
+            }
+        )
+
+        i = i + 1
+    }
+}
+
+TxScript CreateCustomStreams(
+    factory: StreamFactory,
+    tokenId: ByteVec,
+    isCancelable: Bool,
+    isTransferable: Bool,
+    unlockStepRules: ByteVec,
+
+    recipients: ByteVec,
+    amounts: ByteVec
+) {
+    let recipientsCount = size!(recipients) / 33
+    let rulesCount = size!(unlockStepRules) / 9
+    let mut i = 0
+
+    while (i < recipientsCount) {
+        let recipient = byteVecToAddress!(byteVecSlice!(recipients, i * 33, (i + 1) * 33))
+        let amount = u256From32Byte!(byteVecSlice!(amounts, i * 32, (i + 1) * 32))
+        let mut unlockSteps = #
+
+        let mut j = 0
+        while (j < rulesCount) {
+            let start = j * 9
+            let end = (j + 1) * 9
+
+            let timestamp = u256From8Byte!(byteVecSlice!(unlockStepRules, start, start + 8))
+            let percent = u256From1Byte!(byteVecSlice!(unlockStepRules, start + 8, end))
+
+            let unlockAmount = (amount * percent) / 100
+
+            unlockSteps = unlockSteps ++ u256To32Byte!(timestamp) ++ u256To32Byte!(unlockAmount)
+
+            j = j + 1
+        }
+
+        factory.createStream{callerAddress!() -> ALPH: minimalContractDeposit!(), tokenId: amount}(
+            callerAddress!(),
+            tokenId,
+            amount,
+            recipient,
+            StreamConfig {
+                kind: 2,
+
+                isCancelable: isCancelable,
+                isTransferable: isTransferable,
+
+                startTimestamp: 0,
+                endTimestamp: 0,
+
+                unlockInterval: 0,
+                unlockPercentage: 0,
+
+                unlockSteps: unlockSteps
+            }
+        )
+
+        i = i + 1
+    }
+}
