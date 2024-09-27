@@ -10,7 +10,7 @@ TxScript CreateLinearStream(
 ) {
     factory.createStream{callerAddress!() -> ALPH: minimalContractDeposit!(), tokenId: amount}(
         callerAddress!(),
-        ALPH,
+        tokenId,
         amount,
         recipient,
         StreamConfig {
@@ -43,7 +43,7 @@ TxScript CreateIntervalStream(
 ) {
     factory.createStream{callerAddress!() -> ALPH: minimalContractDeposit!(), tokenId: amount}(
         callerAddress!(),
-        ALPH,
+        tokenId,
         amount,
         recipient,
         StreamConfig {
@@ -70,12 +70,11 @@ TxScript CreateCustomStream(
     recipient: Address,
     isCancelable: Bool,
     isTransferable: Bool,
-    startTimestamp: U256,
     unlockSteps: ByteVec
 ) {
     factory.createStream{callerAddress!() -> ALPH: minimalContractDeposit!(), tokenId: amount}(
         callerAddress!(),
-        ALPH,
+        tokenId,
         amount,
         recipient,
         StreamConfig {
@@ -84,7 +83,7 @@ TxScript CreateCustomStream(
             isCancelable: isCancelable,
             isTransferable: isTransferable,
 
-            startTimestamp: startTimestamp,
+            startTimestamp: 0,
             endTimestamp: 0,
 
             unlockInterval: 0,
