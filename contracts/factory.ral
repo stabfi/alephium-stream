@@ -6,9 +6,9 @@ Contract StreamFactory(
     // Event triggered when a new stream is created
     event StreamCreated(streamId: U256, creator: Address, recipient: Address, contractId: ByteVec)
     // Event triggered when a stream is withdrawn
-    event StreamWithdrawn(streamId: U256, recipient: Address, tokenId: ByteVec, amount: U256)
+    event StreamWithdrawn(streamId: U256, recipient: Address, withdrawnAmount: U256, remainingAmount: U256)
     // Event triggered when a stream is canceled
-    event StreamCanceled(streamId: U256, creator: Address, tokenId: ByteVec, amount: U256)
+    event StreamCanceled(streamId: U256, creator: Address, amount: U256)
     // Event triggered when a stream is transferred
     event StreamTransferred(streamId: U256, recipient: Address)
 
@@ -212,7 +212,7 @@ Contract StreamFactory(
         }
 
         // Emit event for stream withdrawal
-        emit StreamWithdrawn(streamId, recipient, tokenId, unlockedAmount)
+        emit StreamWithdrawn(streamId, recipient, unlockedAmount, remainingAmount)
     }
 
     @using(preapprovedAssets = true)
@@ -262,6 +262,6 @@ Contract StreamFactory(
         Stream(contractId).destroyStream()
 
         // Emit event for stream cancellation
-        emit StreamCanceled(streamId, creator, tokenId, lockedAmount)
+        emit StreamCanceled(streamId, creator, lockedAmount)
     }
 }
