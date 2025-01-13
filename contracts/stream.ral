@@ -142,6 +142,6 @@ Contract Stream(
         checkCaller!(callerContractId!() == factoryContractId, StreamError.NotAuthorized)
 
         // Destroy the stream contract
-        destroySelf!(creator)
+        destroySelf!(recipient)
     }
 }
