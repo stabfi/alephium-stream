@@ -225,6 +225,9 @@ Contract StreamFactory(
         let (_, recipient, _, config) = Stream(contractId).getStreamDetails()
         checkCaller!(callerAddress!() == recipient, StreamFactoryError.NotAuthorized)
 
+        // Ensure that the new recipient's address group is valid
+        assert!(groupOfAddress!(newRecipient) == groupOfAddress!(recipient), StreamFactoryError.InvalidRecipientGroup)
+
         // Ensure the stream is transferable
         assert!(config.isTransferable, StreamFactoryError.NotTransferable)
 
