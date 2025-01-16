@@ -44,8 +44,39 @@ Contract Stream(
 
     // Function to get the available amount for unlocking
     pub fn getAvailableAmount() -> U256 {
-        // Get the current block timestamp and return 0 if the stream has not started yet
+        // Get the current block timestamp
         let timestamp = blockTimeStamp!()
+
+        // Check if the stream is custom
+        if (config.kind == 2) {
+            let stepsCount = size!(config.unlockSteps) / 64
+            let mut offset = 0
+
+            // Unlocked amount based on the steps
+            let mut stepsUnlockedAmount = 0
+
+            // Loop through each unlock step
+            while (offset < stepsCount) {
+                let start = offset * 64
+                let end = (offset + 1) * 64
+
+                // Extract the timestamp and amount for each step
+                let stepTimestamp = u256From32Byte!(byteVecSlice!(config.unlockSteps, start, (end - 32)))
+                let stepAmount = u256From32Byte!(byteVecSlice!(config.unlockSteps, start + 32, end))
+
+                if (stepTimestamp <= timestamp) {
+                    stepsUnlockedAmount = stepsUnlockedAmount + stepAmount
+                } else {
+                    return stepsUnlockedAmount - withdrawnAmount
+                }
+
+                offset = offset + 1
+            }
+
+            return stepsUnlockedAmount - withdrawnAmount
+        }
+
+        // Return 0 if the stream has not started yet
         if (timestamp < config.startTimestamp) {
             return 0
         }
@@ -83,34 +114,6 @@ Contract Stream(
             // Return the available amount
             return customUnlockedAmount - withdrawnAmount
         }
-        
-        if (config.kind == 2) {
-            let stepsCount = size!(config.unlockSteps) / 64
-            let mut offset = 0
-
-            // Unlocked amount based on the steps
-            let mut stepsUnlockedAmount = 0
-
-            // Loop through each unlock step
-            while (offset < stepsCount) {
-                let start = offset * 64
-                let end = (offset + 1) * 64
-
-                // Extract the timestamp and amount for each step
-                let stepTimestamp = u256From32Byte!(byteVecSlice!(config.unlockSteps, start, (end - 32)))
-                let stepAmount = u256From32Byte!(byteVecSlice!(config.unlockSteps, start + 32, end))
-
-                if (stepTimestamp <= timestamp) {
-                    stepsUnlockedAmount = stepsUnlockedAmount + stepAmount
-                } else {
-                    return stepsUnlockedAmount - withdrawnAmount
-                }
-
-                offset = offset + 1
-            }
-
-            return stepsUnlockedAmount - withdrawnAmount
-        }
 
         panic!(StreamError.UnknownKind)
     }
@@ -139,6 +142,6 @@ Contract Stream(
         checkCaller!(callerContractId!() == factoryContractId, StreamError.NotAuthorized)
 
         // Destroy the stream contract
-        destroySelf!(creator)
+        destroySelf!(recipient)
     }
 }

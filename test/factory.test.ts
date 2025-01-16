@@ -563,6 +563,31 @@ describe('StreamFactory e2e tests', () => {
         })
       })
 
+      it('should fail if new stream recipient group is invalid', async () => {
+        const instance = getDevnetContract(deployments, 'StreamFactory')
+
+        const recipient = await setAccount('recipient', instance.groupIndex)
+        const newRecipient = randomContractAddress(instance.groupIndex == 0 ? 1 : 0)
+
+        const streamId = await createStream(deployments, tokenId, {
+          recipient: recipient.address,
+          config: {
+            ...defaultStreamFields.config,
+            startTimestamp: BigInt(Date.now()),
+            endTimestamp: BigInt(Date.now() + ONE_DAY),
+            isTransferable: true,
+          },
+        })
+
+        await StreamFactoryWrapper({
+          instance,
+          account: 'recipient',
+          method: 'transferStream',
+          params: { streamId, newRecipient },
+          expected: Fail(StreamFactoryErrors.InvalidRecipientGroup),
+        })
+      })
+
       it('should transfer stream correctly', async () => {
         const instance = getDevnetContract(deployments, 'StreamFactory')
 
